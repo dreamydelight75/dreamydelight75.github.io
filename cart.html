@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Dreamy Delight - Your Cart</title>
+
+<style>
+    /* SOFT & PREMIUM COLOR PALETTE */
+    :root {
+        --bg-color: #FCF9F2; 
+        --primary-dark: #2C363F; 
+        --accent-color: #E76F51; 
+        --accent-light: #F4A261; 
+        --text-muted: #888888;
+        --card-bg: #FFFFFF;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+    body { background: var(--bg-color); padding-bottom: 90px; overflow-x: hidden; color: var(--primary-dark); }
+    ::-webkit-scrollbar { display: none; }
+
+    /* HEADER - LIGHT YELLOW THEME */
+    .topbar{ height: 65px; background: #FFE66D; color: var(--primary-dark); display:flex; align-items:center; padding:0 15px; position: sticky; top:0; z-index:100; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; }
+    .back-arrow { font-size: 26px; cursor: pointer; margin-right: 15px; font-weight: bold; }
+    .top-title{ font-size: 22px; font-weight:900; white-space: nowrap; color: #FF0000; font-family: "Trebuchet MS", sans-serif; letter-spacing: 0.5px; }
+
+    /* MAIN CONTENT */
+    .main-cart { padding: 15px; }
+    .cart-items { margin-bottom: 20px; }
+
+    /* EMPTY CART MESSAGE */
+    .empty-cart-msg { text-align: center; padding: 50px 20px; color: var(--text-muted); }
+    .empty-cart-msg h3 { margin-bottom: 15px; color: var(--primary-dark); font-size: 22px; }
+    .menu-btn { padding: 14px 30px; background: var(--accent-color); color: white; border: none; border-radius: 15px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 5px 15px rgba(231, 111, 81, 0.2); transition: 0.3s; }
+    .menu-btn:active { transform: scale(0.96); }
+
+    /* INDIVIDUAL CART CARD */
+    .cart-card { background: var(--card-bg); border-radius: 20px; display: flex; padding: 12px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); align-items: center; position: relative; transition: 0.3s; border: 1px solid rgba(0,0,0,0.02); }
+    .cart-img { width: 75px; height: 75px; object-fit: cover; border-radius: 15px; margin-right: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .cart-info { flex: 1; }
+    .cart-title { font-size: 15px; font-weight: bold; color: var(--primary-dark); margin-bottom: 6px; line-height: 1.2; }
+    .cart-price { font-size: 16px; font-weight: 900; color: var(--accent-color); }
+    .cart-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
+    .delete-btn { color: #ff4d4d; font-size: 18px; cursor: pointer; transition: 0.3s; background: #ffe6e6; width: 30px; height: 30px; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+    .delete-btn:active { transform: scale(0.85); }
+    .qty-control { display: flex; align-items: center; background: #FFF9F5; border-radius: 20px; padding: 4px 8px; border: 1px solid rgba(0,0,0,0.03); }
+    .qty-btn { background: none; border: none; font-size: 18px; font-weight: bold; color: var(--primary-dark); cursor: pointer; padding: 0 8px; }
+    .qty-num { font-size: 14px; font-weight: bold; color: var(--primary-dark); margin: 0 5px; min-width: 15px; text-align: center; }
+
+    /* BILL SUMMARY SECTION */
+    .bill-section { background: var(--card-bg); border-radius: 20px; padding: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); margin-bottom: 20px; border: 1px solid rgba(0,0,0,0.02); }
+    .bill-title { font-size: 16px; font-weight: 900; color: var(--primary-dark); margin-bottom: 15px; border-bottom: 1px dashed rgba(0,0,0,0.1); padding-bottom: 10px; }
+    .bill-row { display: flex; justify-content: space-between; font-size: 14px; color: var(--text-muted); font-weight: bold; margin-bottom: 10px; }
+    .bill-total { display: flex; justify-content: space-between; font-size: 18px; font-weight: 900; color: #FF0000; margin-top: 15px; border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 15px; }
+
+    /* CHECKOUT BUTTON */
+    .checkout-btn { width: 100%; background: var(--accent-color); color: white; border: none; padding: 16px; border-radius: 15px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 5px 15px rgba(231, 111, 81, 0.3); transition: 0.3s; }
+    .checkout-btn:active { transform: scale(0.96); }
+
+    /* FLOATING BOTTOM NAV */
+    .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px 0 15px 0; z-index: 100; box-shadow: 0 -5px 25px rgba(0,0,0,0.06); border-top-left-radius: 25px; border-top-right-radius: 25px; }
+    .bottom-nav div { color: var(--text-muted); text-align: center; font-size: 12px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+    .icon { font-size: 24px; margin-bottom: 3px; font-style: normal; transition: transform 0.2s; }
+    .bottom-nav div:active .icon { transform: scale(0.85); }
+    .icon-wrapper { position: relative; display: inline-block; }
+    .active-nav, .active-nav div:not(.cart-badge) { color: var(--accent-color) !important; }
+    .cart-badge { position: absolute; top: -5px; right: -8px; background: var(--accent-color); color: white; font-size: 10px; font-weight: bold; border-radius: 50%; width: 18px; height: 18px; display: none; align-items: center; justify-content: center; border: 2px solid white; box-sizing: content-box; }
+
+    /* SIDE MENU UPDATES */
+    .side-menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(44, 54, 63, 0.7); z-index: 998; opacity: 0; pointer-events: none; transition: 0.3s ease-in-out; backdrop-filter: blur(3px); }
+    .side-menu-overlay.active { opacity: 1; pointer-events: auto; }
+    
+    .side-menu { position: fixed; top: 0; left: -100%; width: 80%; max-width: 320px; height: 100vh; background: var(--bg-color); z-index: 999; transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1); display: flex; flex-direction: column; overflow-y: auto; box-shadow: 5px 0 25px rgba(0,0,0,0.15); }
+    .side-menu.active { left: 0; }
+    .side-menu-top { display: flex; justify-content: space-between; align-items: center; padding: 25px 20px 10px 20px; }
+    .back-btn { font-size: 26px; color: var(--primary-dark); cursor: pointer; background: none; border: none; }
+    
+    .login-container { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 0 30px; }
+    .splash-img { width: 180px; height: 180px; background: url('https://cdn-icons-png.flaticon.com/512/3135/3135715.png') no-repeat center center; background-size: contain; margin-bottom: 20px; opacity: 0.9; }
+    .login-title { font-size: 28px; color: var(--primary-dark); font-weight: 900; margin-bottom: 30px; letter-spacing: 1px; }
+    .input-group { display: flex; align-items: center; width: 100%; background: white; padding: 15px 20px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); }
+    .email-input { border: none; background: transparent; outline: none; font-size: 15px; color: var(--primary-dark); width: 100%; font-weight: bold; }
+    .proceed-btn { width: 100%; background: #d9dada; color: white; font-size: 18px; font-weight: bold; border: none; padding: 16px; border-radius: 15px; cursor: not-allowed; transition: 0.3s ease; margin-top: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+    
+    .login-disclaimer { font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 25px; line-height: 1.5; padding: 0 5px; }
+
+    .profile-container { display: none; width: 100%; padding: 0 20px; padding-bottom: 50px; }
+    .profile-header-info { display: flex; align-items: center; gap: 15px; margin-bottom: 35px; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.02); }
+    .avatar { width: 60px; height: 60px; background: #FFF9F5 url('https://cdn-icons-png.flaticon.com/512/3135/3135715.png') no-repeat center center; background-size: contain; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 2px solid var(--accent-light); }
+    
+    .user-details h2 { color: var(--primary-dark); font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+    .edit-icon { font-size: 16px; cursor: pointer; color: var(--accent-color); transition: transform 0.2s; background: #FFF5F0; padding: 5px; border-radius: 50%; display: flex; }
+    .edit-icon:active { transform: scale(0.8); }
+    .user-details p { color: var(--text-muted); font-size: 13px; font-weight: bold; margin-top: 4px; }
+    
+    .profile-menu-list { display: flex; flex-direction: column; background: white; border-radius: 20px; padding: 10px 0; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02); }
+    .profile-menu-item { display: flex; align-items: center; gap: 15px; padding: 16px 20px; color: var(--primary-dark); font-size: 15px; font-weight: bold; cursor: pointer; border-bottom: 1px solid rgba(0,0,0,0.03); transition: background 0.2s; }
+    .profile-menu-item:active { background: #FCF9F2; }
+    .profile-menu-item:last-child { border-bottom: none; }
+    .menu-icon-img { font-size: 20px; width: 25px; text-align: center; }
+
+    /* ALERTS & MODALS */
+    .top-alert { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: #4CAF50; color: white; padding: 15px 20px; border-radius: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.2); display: flex; justify-content: space-between; align-items: center; z-index: 10000; transition: top 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+    .top-alert.show { top: 20px; }
+    .top-alert-msg { font-size: 14px; font-weight: bold; flex: 1; }
+
+    .custom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(44, 54, 63, 0.7); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(3px); opacity: 0; transition: opacity 0.3s ease; }
+    .custom-modal.show { display: flex; opacity: 1; }
+    .modal-content { background: white; padding: 30px 20px; border-radius: 25px; text-align: center; width: 80%; max-width: 320px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); transform: translateY(20px) scale(0.95); transition: transform 0.3s ease; }
+    .close-modal-btn { background: var(--accent-color); color: white; border: none; padding: 14px 30px; border-radius: 15px; font-size: 15px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
+</style>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="firebase-config.js"></script>
+
+</head>
+<body>
+
+<div class="top-alert" id="topAlert">
+    <div class="top-alert-msg" id="topAlertMsg">Notification message</div>
+</div>
+
+<div class="topbar">
+    <div class="back-arrow" onclick="goBackToMenu()">←</div>
+    <div class="top-title">Your Cart</div>
+</div>
+
+<div class="main-cart">
+    <div class="cart-items" id="cartContainer"></div>
+
+    <div class="bill-section" id="billSection">
+        <div class="bill-title">Bill Details</div>
+        
+        <div class="bill-row">
+            <span>Total MRP</span>
+            <span>₹<span id="totalMrpAmount">0</span></span>
+        </div>
+        <div class="bill-row" id="discountRow" style="color: #4CAF50; display: none;">
+            <span>Discount Savings</span>
+            <span>- ₹<span id="discountAmount">0</span></span>
+        </div>
+        
+        <div class="bill-row">
+            <span>Item Subtotal</span>
+            <span>₹<span id="subTotal">0</span></span>
+        </div>
+        <div class="bill-row">
+            <span>Taxes & Charges (5%)</span>
+            <span>₹<span id="taxAmount">0</span></span>
+        </div>
+        <div class="bill-row">
+            <span>Delivery Fee</span>
+            <span>₹<span id="deliveryFee">0</span></span>
+        </div>
+        <div class="bill-total">
+            <span>Grand Total</span>
+            <span>₹<span id="grandTotal">0</span></span>
+        </div>
+    </div>
+
+    <button class="checkout-btn" id="checkoutBtn">Proceed to Pay</button>
+</div>
+
+<div class="bottom-nav">
+    <div onclick="window.location.replace('index.html')">
+        <div class="icon">🏠</div>Home
+    </div>
+    <div onclick="window.location.replace('menu.html')">
+        <div class="icon">🍔</div>Menu
+    </div>
+    <div class="active-nav">
+        <div class="icon-wrapper">
+            <div class="icon">🛒</div>
+            <span class="cart-badge" id="cartCount">0</span>
+        </div>
+        <div>Cart</div>
+    </div>
+    <div onclick="showComingSoonModal('rewards')">
+        <div class="icon">🎁</div>Rewards
+    </div>
+</div>
+
+<div class="side-menu-overlay" id="sideMenuOverlay" onclick="closeSideMenu()"></div>
+
+<div class="side-menu" id="sideMenu">
+    <div class="side-menu-top">
+        <button class="back-btn" onclick="closeSideMenu()">← Back</button>
+    </div>
+    
+    <div class="login-container" id="loginFormContainer">
+        <div class="splash-img"></div>
+        <h1 class="login-title">LOGIN</h1>
+        <div style="width: 100%;">
+            <div class="input-group">
+                <input type="email" id="emailBox" class="email-input" placeholder="Enter your email (@gmail.com)">
+            </div>
+            <div class="input-group">
+                <input type="password" id="passBox" class="email-input" placeholder="Enter password (Min 8 chars)">
+            </div>
+            <button id="proceedBtn" class="proceed-btn" disabled onclick="handleDatabaseAuth()">Proceed</button>
+        </div>
+        <p class="login-disclaimer">Note: We currently do not have a password reset feature. If you forget your password, please contact customer care or create a new ID.</p>
+    </div>
+
+    <div class="profile-container" id="profileContainer">
+        <div class="profile-header-info">
+            <div class="avatar"></div>
+            <div class="user-details">
+                <h2 id="profileName">User <span class="edit-icon" onclick="window.location.href='editprofile.html'">✏️</span></h2>
+                <p id="profileEmail">user@gmail.com</p>
+            </div>
+        </div>
+        <div class="profile-menu-list">
+            <div class="profile-menu-item" onclick="window.location.href='order.html'"><span class="menu-icon-img">🕒</span> Recent Orders</div>
+            <div class="profile-menu-item" onclick="window.location.href='addresses.html'"><span class="menu-icon-img">📍</span> Saved Addresses</div>
+            <div style="border-bottom: 5px solid #FCF9F2;"></div>
+            <div class="profile-menu-item" onclick="window.location.href='customercare.html'"><span class="menu-icon-img">💬</span> Customer Care</div>
+            <div class="profile-menu-item" onclick="window.location.href='terms.html'"><span class="menu-icon-img">📄</span> Legal Terms</div>
+            <div class="profile-menu-item" onclick="window.location.href='nutrition.html'"><span class="menu-icon-img">🔥</span> Nutrition Info</div>
+            <div class="profile-menu-item" onclick="window.location.href='fssai.html'"><span class="menu-icon-img">📜</span> FSSAI</div>
+            <div style="border-bottom: 5px solid #FCF9F2;"></div>
+            <div class="profile-menu-item" onclick="logoutUser()" style="color: #E76F51;"><span class="menu-icon-img">🚪</span> Logout</div>
+        </div>
+    </div>
+</div>
+
+<div id="comingSoonModal" class="custom-modal">
+    <div class="modal-content">
+        <div class="modal-icon" id="modalIcon" style="font-size: 50px; margin-bottom: 10px;">🎁</div>
+        <h2 id="modalTitle" style="color: #2C363F; margin-bottom: 10px;">Coming Soon!</h2>
+        <p id="modalDesc" style="color: #888; font-size: 14px; margin-bottom: 20px;">We are working hard to bring you exciting updates. Stay tuned!</p>
+        <button class="close-modal-btn" id="modalActionBtn">Got It</button>
+    </div>
+</div>
+
+<script>
+// Database instance
+const db = firebase.database();
+let cartData = JSON.parse(localStorage.getItem('myCart')) || [];
+
+// Fetch local copy of menu to check Original Price
+const menuCache = JSON.parse(localStorage.getItem('userCachedMenuProducts')) || [];
+
+// ==========================================
+// 🚀 FIXED: BULLETPROOF HISTORY LOGIC 🚀
+// ==========================================
+history.replaceState({ page: 'cart_base' }, null, location.href);
+history.pushState({ page: 'cart_trap' }, null, location.href);
+
+window.addEventListener('popstate', function(event) {
+    const sideMenu = document.getElementById("sideMenu");
+    if (sideMenu.classList.contains("active")) {
+        sideMenu.classList.remove("active");
+        document.getElementById("sideMenuOverlay").classList.remove("active");
+        history.pushState({ page: 'cart_trap' }, null, location.href);
+    } else {
+        window.location.replace('menu.html');
+    }
+});
+
+function goBackToMenu() {
+    window.location.replace('menu.html');
+}
+
+function openSideMenu() { 
+    document.getElementById("sideMenu").classList.add("active");
+    document.getElementById("sideMenuOverlay").classList.add("active");
+    history.pushState({ sideMenuOpen: true }, null, location.href); 
+}
+
+function closeSideMenu() { 
+    if (document.getElementById("sideMenu").classList.contains("active")) {
+        history.back(); 
+    }
+}
+// ==========================================
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    renderCartUI();
+    checkLoginState();
+});
+
+document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
+
+function checkLoginState() {
+    const savedEmail = localStorage.getItem("loggedInEmail");
+    const savedName = localStorage.getItem("loggedInName");
+    const btn = document.getElementById("checkoutBtn");
+
+    if(savedEmail) {
+        updateUIForLoggedInUser(savedEmail, savedName);
+        if(cartData.length > 0) {
+            btn.innerText = "Proceed to Pay";
+            btn.onclick = function() { 
+                let billBreakup = {
+                    totalMrp: document.getElementById("totalMrpAmount").innerText,
+                    discount: document.getElementById("discountAmount").innerText,
+                    subTotal: document.getElementById("subTotal").innerText,
+                    tax: document.getElementById("taxAmount").innerText,
+                    delivery: document.getElementById("deliveryFee").innerText,
+                    grandTotal: document.getElementById("grandTotal").innerText
+                };
+                localStorage.setItem("latestOrderBillSummary", JSON.stringify(billBreakup));
+                window.location.href = 'payment.html'; 
+            };
+        }
+    } else {
+        updateUIForLoggedOutUser();
+        if(cartData.length > 0) {
+            btn.innerText = "Login to Checkout";
+            btn.onclick = function() { showComingSoonModal('login_required'); };
+        }
+    }
+}
+
+function renderCartUI() {
+    const container = document.getElementById("cartContainer");
+    const billSection = document.getElementById("billSection");
+    const checkoutBtn = document.getElementById("checkoutBtn");
+    
+    if(cartData.length === 0) {
+        container.innerHTML = `
+            <div class="empty-cart-msg">
+                <h3>Your cart is empty! 🍔</h3>
+                <p style="margin-bottom: 20px;">Looks like you haven't added anything yet.</p>
+                <button class="menu-btn" onclick="window.location.replace('menu.html')">Explore Menu</button>
+            </div>
+        `;
+        billSection.style.display = "none";
+        checkoutBtn.style.display = "none";
+        updateCartBadge();
+        return;
+    }
+
+    billSection.style.display = "block";
+    checkoutBtn.style.display = "block";
+    
+    let html = "";
+    cartData.forEach((item) => {
+        // Logic to extract original price from menuCache
+        let menuItem = menuCache.find(m => m.id === item.id);
+        let originalPrice = item.price; // Default
+        
+        if (menuItem && menuItem.price) {
+            originalPrice = parseFloat(menuItem.price);
+        }
+
+        let priceDisplay = `₹<span class="item-price-val">${item.price}</span>`;
+        if (originalPrice > item.price) {
+            priceDisplay = `<span style="text-decoration: line-through; color: #888; font-size: 13px; margin-right: 6px;">₹${originalPrice}</span>` + priceDisplay;
+        }
+
+        html += `
+        <div class="cart-card" id="card-${item.id}">
+            <img class="cart-img" src="${item.image}">
+            <div class="cart-info">
+                <div class="cart-title">${item.name}</div>
+                <div class="cart-price">${priceDisplay}</div>
+            </div>
+            <div class="cart-actions">
+                <div class="delete-btn" onclick="removeItem('${item.id}')">✕</div>
+                <div class="qty-control">
+                    <button class="qty-btn" onclick="updateQty('${item.id}', -1)">-</button>
+                    <span class="qty-num" id="qty-${item.id}">${item.qty}</span>
+                    <button class="qty-btn" onclick="updateQty('${item.id}', 1)">+</button>
+                </div>
+            </div>
+        </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+    calculateLiveBill();
+    updateCartBadge();
+}
+
+function updateQty(id, change) {
+    let index = cartData.findIndex(i => i.id === id);
+    if(index > -1) {
+        cartData[index].qty += change;
+        if(cartData[index].qty < 1) cartData[index].qty = 1;
+        localStorage.setItem('myCart', JSON.stringify(cartData));
+        document.getElementById(`qty-${id}`).innerText = cartData[index].qty;
+        calculateLiveBill();
+        updateCartBadge();
+    }
+}
+
+function removeItem(id) {
+    cartData = cartData.filter(item => item.id !== id);
+    localStorage.setItem('myCart', JSON.stringify(cartData));
+    renderCartUI();
+    checkLoginState();
+}
+
+function calculateLiveBill() {
+    let subTotal = 0; // Final Price
+    let totalMRP = 0; // Original MRP
+
+    cartData.forEach(item => {
+        let menuItem = menuCache.find(m => m.id === item.id);
+        let originalPrice = item.price;
+        if (menuItem && menuItem.price) {
+            originalPrice = parseFloat(menuItem.price);
+        }
+        
+        totalMRP += (originalPrice * item.qty);
+        subTotal += (item.price * item.qty);
+    });
+
+    let totalDiscount = totalMRP - subTotal;
+    let tax = Math.round(subTotal * 0.05); // 5% Tax applied on discounted amount
+    let delivery = subTotal > 0 ? 40 : 0;
+    let grandTotal = subTotal + tax + delivery;
+
+    document.getElementById("totalMrpAmount").innerText = totalMRP;
+    document.getElementById("discountAmount").innerText = totalDiscount;
+    document.getElementById("subTotal").innerText = subTotal;
+    document.getElementById("taxAmount").innerText = tax;
+    document.getElementById("deliveryFee").innerText = delivery;
+    document.getElementById("grandTotal").innerText = grandTotal;
+
+    // Show or Hide discount row based on total savings
+    if (totalDiscount > 0) {
+        document.getElementById("discountRow").style.display = "flex";
+    } else {
+        document.getElementById("discountRow").style.display = "none";
+    }
+}
+
+function updateCartBadge() {
+    let totalItems = 0;
+    cartData.forEach(item => totalItems += item.qty);
+    const badge = document.getElementById("cartCount");
+    badge.innerText = totalItems;
+    if(totalItems > 0) badge.style.display = "flex";
+    else badge.style.display = "none";
+}
+
+/* Auth Logic */
+function handleDatabaseAuth() {
+    const email = document.getElementById("emailBox").value.trim().toLowerCase();
+    const pass = document.getElementById("passBox").value;
+    const btn = document.getElementById("proceedBtn");
+    
+    btn.innerText = "Processing...";
+    btn.disabled = true;
+
+    const dbKey = email.replace(/\./g, ',');
+    const encryptedPass = btoa(pass + "_dreamySec");
+
+    db.ref('users/' + dbKey).once('value')
+    .then((snapshot) => {
+        if (snapshot.exists()) {
+            const userData = snapshot.val();
+            if (userData.password === encryptedPass || userData.password === pass) {
+                localStorage.setItem("loggedInEmail", email);
+                localStorage.setItem("loggedInName", userData.name || email.split('@')[0]);
+                showTopAlert("Login Successful! 🍔", "success");
+                closeSideMenu();
+                checkLoginState();
+            } else {
+                showTopAlert("Incorrect Password.", "error");
+            }
+            resetBtnState();
+        } else {
+            const defaultName = email.split('@')[0];
+            db.ref('users/' + dbKey).set({
+                email: email,
+                password: encryptedPass,
+                name: defaultName
+            }).then(() => {
+                localStorage.setItem("loggedInEmail", email);
+                localStorage.setItem("loggedInName", defaultName);
+                showTopAlert("Registration Successful! 🎉", "success");
+                closeSideMenu();
+                checkLoginState();
+                resetBtnState();
+            }).catch((err) => {
+                showTopAlert("Database Error: " + err.message, "error");
+                resetBtnState();
+            });
+        }
+    })
+    .catch((error) => {
+        showTopAlert("Network Error: " + error.message, "error");
+        resetBtnState();
+    });
+}
+
+function resetBtnState() {
+    const btn = document.getElementById("proceedBtn");
+    btn.innerText = "Proceed";
+    btn.disabled = false;
+    validateLogin();
+}
+
+function logoutUser() {
+    localStorage.removeItem("loggedInEmail");
+    localStorage.removeItem("loggedInName");
+    showTopAlert("Logged Out Successfully", "success");
+    closeSideMenu();
+    checkLoginState();
+}
+
+function updateUIForLoggedInUser(email, name) {
+    document.getElementById("loginFormContainer").style.display = "none";
+    document.getElementById("profileContainer").style.display = "block";
+    const formatName = name.charAt(0).toUpperCase() + name.slice(1);
+    document.getElementById("profileName").innerHTML = formatName + ` <span class="edit-icon" onclick="window.location.href='editprofile.html'">✏️</span>`;
+    document.getElementById("profileEmail").innerText = email;
+}
+
+function updateUIForLoggedOutUser() {
+    document.getElementById("loginFormContainer").style.display = "flex";
+    document.getElementById("profileContainer").style.display = "none";
+    document.getElementById("emailBox").value = "";
+    document.getElementById("passBox").value = "";
+    validateLogin(); 
+}
+
+const emailInput = document.getElementById('emailBox');
+const passInput = document.getElementById('passBox');
+const proceedBtn = document.getElementById('proceedBtn');
+
+function validateLogin() {
+    if (emailInput.value.includes("@gmail.com") && passInput.value.length >= 8) {
+        proceedBtn.disabled = false;
+        proceedBtn.style.background = "var(--accent-color)"; 
+        proceedBtn.style.cursor = "pointer";
+    } else {
+        proceedBtn.disabled = true;
+        proceedBtn.style.background = "#d9dada"; 
+        proceedBtn.style.cursor = "not-allowed";
+        proceedBtn.innerText = "Proceed";
+    }
+}
+emailInput.addEventListener('input', validateLogin);
+passInput.addEventListener('input', validateLogin);
+
+function showTopAlert(msg, type) {
+    const alertBox = document.getElementById("topAlert");
+    document.getElementById("topAlertMsg").innerText = msg;
+    alertBox.style.background = type === 'error' ? "#e53300" : "#4CAF50";
+    alertBox.classList.add("show");
+    setTimeout(() => { alertBox.classList.remove("show"); }, 3000);
+}
+
+function showComingSoonModal(mode) {
+    const modal = document.getElementById("comingSoonModal");
+    const actionBtn = document.getElementById("modalActionBtn");
+    
+    if(mode === 'login_required') {
+        document.getElementById("modalIcon").innerText = "🔒";
+        document.getElementById("modalTitle").innerText = "Login Required";
+        document.getElementById("modalDesc").innerText = "Please log in first to proceed with your order.";
+        
+        actionBtn.onclick = function() {
+            closeComingSoonModal();
+            openSideMenu();
+        };
+    } else {
+        document.getElementById("modalIcon").innerText = "🎁";
+        document.getElementById("modalTitle").innerText = "Coming Soon!";
+        document.getElementById("modalDesc").innerText = "We are working hard to bring you exciting updates. Stay tuned!";
+        actionBtn.onclick = closeComingSoonModal;
+    }
+    
+    modal.style.display = "flex";
+    setTimeout(() => { modal.classList.add("show"); }, 10);
+}
+
+function closeComingSoonModal() {
+    const modal = document.getElementById("comingSoonModal");
+    modal.classList.remove("show");
+    setTimeout(() => { modal.style.display = "none"; }, 300);
+}
+</script>
+</body>
+</html>

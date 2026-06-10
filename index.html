@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Dreamy Delight - Delicious Food</title>
+<style>
+    /* SOFT & PREMIUM COLOR PALETTE */
+    :root {
+        --bg-color: #FCF9F2; /* Warm Cream */
+        --primary-dark: #2C363F; /* Charcoal Slate */
+        --accent-color: #E76F51; /* Soft Terracotta / Peach */
+        --accent-light: #F4A261; /* Sandy Orange */
+        --text-muted: #888888;
+        --card-bg: #FFFFFF;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+    body { background: var(--bg-color); padding-bottom: 90px; overflow-x: hidden; }
+    
+    /* CURVED HEADER - COMPLETELY LIGHT YELLOW NOW */
+    .header { background: #FFE66D; padding: 15px 15px 25px 15px; border-bottom-left-radius: 25px; border-bottom-right-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+    .top-row { display: flex; align-items: center; position: relative; height: 35px; }
+    
+    /* Menu Icon color changed to dark so it's visible on yellow background */
+    .menu-icon { font-size: 30px; cursor: pointer; z-index: 2; color: var(--primary-dark); }
+    
+    /* UPDATED BRAND TITLE: HIGHLIGHT RED COLOR */
+    .brand-title { 
+        position: absolute; 
+        width: 100%; 
+        left: 0; 
+        text-align: center; 
+        color: #FF0000; /* Highlighted Red */
+        font-size: 26px; 
+        font-weight: 900; 
+        letter-spacing: 1px; 
+        font-family: "Trebuchet MS", sans-serif; 
+        z-index: 1; 
+        pointer-events: none; 
+    }
+    
+    /* UPDATED SLIDER: MOVED DOWN TO FIX CLASH WITH HEADER */
+    .slider { width: 92%; height: 200px; position: relative; overflow: hidden; margin: 20px auto 20px auto; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); z-index: 5; background: white; }
+    .slides { display: flex; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); }
+    .slide { min-width: 100%; height: 100%; }
+    .slide img { width: 100%; height: 100%; object-fit: cover; }
+    .prev, .next { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(44, 54, 63, 0.6); color: white; border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 18px; cursor: pointer; z-index: 10; backdrop-filter: blur(2px); }
+    .prev { left: 10px; } .next { right: 10px; }
+    .dots { position: absolute; bottom: 12px; width: 100%; display: flex; justify-content: center; gap: 6px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); transition: 0.3s; }
+    .dot.active { background: white; width: 24px; border-radius: 10px; }
+    
+    /* MENU GRID (SHADOW FIX EKDUM PROPER) */
+    .title { font-size: 26px; color: var(--primary-dark); padding: 10px 20px 20px 20px; font-weight: 900; letter-spacing: 0.5px; }
+    .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 20px; margin-bottom: 35px; }
+    
+    .card { 
+        background: transparent; 
+        padding: 12px 10px; 
+        text-align: center; 
+        border: 2px solid var(--accent-light); /* Orange Theme color outline */
+        border-radius: 20px; 
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12); /* DARKER SHADOW ADDED FOR THE OUTLINE BOX */
+        cursor: pointer; 
+        transition: transform 0.2s, border-color 0.3s, box-shadow 0.2s; 
+    }
+    .card:active { 
+        transform: scale(0.95); 
+        border-color: var(--accent-color); 
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); 
+    }
+    
+    .card img { 
+        width: 100%; 
+        height: 150px; 
+        border-radius: 15px; 
+        object-fit: contain; 
+        background: transparent; 
+        margin-bottom: 10px; 
+        filter: drop-shadow(0 15px 20px rgba(0, 0, 0, 0.35)); /* PROPER DARK 3D SHADOW FOR PICTURE */
+    }
+    
+    .card h3 { 
+        margin-top: 5px; 
+        color: var(--primary-dark); 
+        font-size: 16px; 
+        font-weight: 900; 
+    }
+    
+    /* FLOATING BOTTOM NAV */
+    .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px 0 15px 0; z-index: 100; box-shadow: 0 -5px 25px rgba(0,0,0,0.06); border-top-left-radius: 25px; border-top-right-radius: 25px; }
+    .bottom-nav div { color: var(--text-muted); text-align: center; font-size: 12px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+    .icon { font-size: 24px; margin-bottom: 3px; font-style: normal; transition: transform 0.2s; }
+    .bottom-nav div:active .icon { transform: scale(0.85); }
+    .icon-wrapper { position: relative; display: inline-block; }
+    .active-nav { color: var(--accent-color) !important; }
+    .cart-badge { position: absolute; top: -5px; right: -8px; background: var(--accent-color); color: white; font-size: 10px; font-weight: bold; border-radius: 50%; width: 18px; height: 18px; display: none; align-items: center; justify-content: center; border: 2px solid white; box-sizing: content-box; }
+    
+    /* SIDE MENU UPDATES */
+    .side-menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(44, 54, 63, 0.7); z-index: 998; opacity: 0; pointer-events: none; transition: 0.3s ease-in-out; backdrop-filter: blur(3px); }
+    .side-menu-overlay.active { opacity: 1; pointer-events: auto; }
+    
+    .side-menu { position: fixed; top: 0; left: -100%; width: 80%; max-width: 320px; height: 100vh; background: var(--bg-color); z-index: 999; transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1); display: flex; flex-direction: column; overflow-y: auto; box-shadow: 5px 0 25px rgba(0,0,0,0.15); }
+    .side-menu.active { left: 0; }
+    .side-menu-top { display: flex; justify-content: space-between; align-items: center; padding: 25px 20px 10px 20px; }
+    .back-btn { font-size: 26px; color: var(--primary-dark); cursor: pointer; background: none; border: none; }
+    
+    .login-container { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 0 30px; }
+    .splash-img { width: 180px; height: 180px; background: url('https://cdn-icons-png.flaticon.com/512/3135/3135715.png') no-repeat center center; background-size: contain; margin-bottom: 20px; opacity: 0.9; }
+    .login-title { font-size: 28px; color: var(--primary-dark); font-weight: 900; margin-bottom: 30px; letter-spacing: 1px; }
+    .input-group { display: flex; align-items: center; width: 100%; background: white; padding: 15px 20px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); }
+    .email-input { border: none; background: transparent; outline: none; font-size: 15px; color: var(--primary-dark); width: 100%; font-weight: bold; }
+    .proceed-btn { width: 100%; background: #d9dada; color: white; font-size: 18px; font-weight: bold; border: none; padding: 16px; border-radius: 15px; cursor: not-allowed; transition: 0.3s ease; margin-top: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+    
+    .login-disclaimer { font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 25px; line-height: 1.5; padding: 0 5px; }
+
+    .profile-container { display: none; width: 100%; padding: 0 20px; padding-bottom: 50px; }
+    .profile-header-info { display: flex; align-items: center; gap: 15px; margin-bottom: 35px; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.02); }
+    
+    /* UPDATED AVATAR - SAME AS LOGIN SPLASH IMAGE */
+    .avatar { 
+        width: 60px; height: 60px; 
+        background: #FFF9F5 url('https://cdn-icons-png.flaticon.com/512/3135/3135715.png') no-repeat center center; 
+        background-size: contain;
+        border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 2px solid var(--accent-light); 
+    }
+    
+    .user-details h2 { color: var(--primary-dark); font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+    .edit-icon { font-size: 16px; cursor: pointer; color: var(--accent-color); transition: transform 0.2s; background: #FFF5F0; padding: 5px; border-radius: 50%; display: flex; }
+    .edit-icon:active { transform: scale(0.8); }
+    .user-details p { color: var(--text-muted); font-size: 13px; font-weight: bold; margin-top: 4px; }
+    
+    .profile-menu-list { display: flex; flex-direction: column; background: white; border-radius: 20px; padding: 10px 0; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02); }
+    .profile-menu-item { display: flex; align-items: center; gap: 15px; padding: 16px 20px; color: var(--primary-dark); font-size: 15px; font-weight: bold; cursor: pointer; border-bottom: 1px solid rgba(0,0,0,0.03); transition: background 0.2s; }
+    .profile-menu-item:active { background: #FCF9F2; }
+    .profile-menu-item:last-child { border-bottom: none; }
+    .menu-icon-img { font-size: 20px; width: 25px; text-align: center; }
+    
+    /* CUSTOM ALERTS */
+    .top-alert { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: #4CAF50; color: white; padding: 15px 20px; border-radius: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.2); display: flex; justify-content: space-between; align-items: center; z-index: 10000; transition: top 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+    .top-alert.show { top: 20px; }
+    .top-alert-msg { font-size: 14px; font-weight: bold; flex: 1; }
+    .top-alert-close { cursor: pointer; font-size: 20px; font-weight: bold; margin-left: 15px; width: 25px; height: 25px; display: flex; align-items: center; justify-content: center; }
+    
+    .custom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(44, 54, 63, 0.7); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(3px); opacity: 0; transition: opacity 0.3s ease; }
+    .custom-modal.show { display: flex; opacity: 1; }
+    .modal-content { background: white; padding: 30px 20px; border-radius: 25px; text-align: center; width: 80%; max-width: 320px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); transform: translateY(20px) scale(0.95); transition: transform 0.3s ease; }
+    .close-modal-btn { background: var(--accent-color); color: white; border: none; padding: 14px 30px; border-radius: 15px; font-size: 15px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
+</style>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="firebase-config.js"></script>
+
+</head>
+<body>
+
+<div class="top-alert" id="topAlert">
+    <div class="top-alert-msg" id="topAlertMsg">Notification message</div>
+    <div class="top-alert-close" onclick="closeTopAlert()">×</div>
+</div>
+
+<div class="header">
+    <div class="top-row">
+        <div class="menu-icon" onclick="openSideMenu()">☰</div>
+        <div class="brand-title" id="displayBrandTitle">Dreamy Delight</div>
+    </div>
+</div>
+
+<div class="slider">
+    <div class="slides" id="userSlidesContainer"></div>
+    <button class="prev" onclick="prevSlide()">❮</button>
+    <button class="next" onclick="nextSlide()">❯</button>
+    <div class="dots" id="userDotsContainer"></div>
+</div>
+
+<div class="title">Our Menu</div>
+
+<div class="menu-grid" id="userCategoriesContainer"></div>
+
+<div class="bottom-nav">
+    <div class="active-nav"><div class="icon">🏠</div>Home</div>
+    <div onclick="window.location.href='menu.html'"><div class="icon">🍔</div>Menu</div>
+    <div onclick="window.location.href='cart.html'">
+        <div class="icon-wrapper">
+            <div class="icon">🛒</div><span class="cart-badge" id="cartCount">0</span>
+        </div><div>Cart</div>
+    </div>
+    <div onclick="showComingSoonModal()"><div class="icon">🎁</div>Rewards</div>
+</div>
+
+<div class="side-menu-overlay" id="sideMenuOverlay" onclick="closeSideMenu()"></div>
+
+<div class="side-menu" id="sideMenu">
+    <div class="side-menu-top">
+        <button class="back-btn" onclick="closeSideMenu()">← Back</button>
+    </div>
+    
+    <div class="login-container" id="loginFormContainer">
+        <div class="splash-img"></div>
+        <h1 class="login-title">Welcome Back</h1>
+        <div style="width: 100%;">
+            <div class="input-group">
+                <input type="email" id="emailBox" class="email-input" placeholder="Enter your email (@gmail.com)">
+            </div>
+            <div class="input-group">
+                <input type="password" id="passBox" class="email-input" placeholder="Enter password (Min 8 chars)">
+            </div>
+            <button id="proceedBtn" class="proceed-btn" disabled onclick="handleDatabaseAuth()">Proceed</button>
+        </div>
+        <p class="login-disclaimer">Note: We currently do not have a password reset feature. If you forget your password, please contact customer care or create a new ID.</p>
+    </div>
+
+    <div class="profile-container" id="profileContainer">
+        <div class="profile-header-info">
+            <div class="avatar"></div>
+            <div class="user-details">
+                <h2 id="profileName">User <span class="edit-icon" onclick="window.location.href='editprofile.html'">✏️</span></h2>
+                <p id="profileEmail">user@gmail.com</p>
+            </div>
+        </div>
+        <div class="profile-menu-list">
+            <div class="profile-menu-item" onclick="window.location.href='order.html'"><span class="menu-icon-img">🕒</span> Recent Orders</div>
+            <div class="profile-menu-item" onclick="window.location.href='addresses.html'"><span class="menu-icon-img">📍</span> Saved Addresses</div>
+            <div style="border-bottom: 5px solid #FCF9F2;"></div>
+            <div class="profile-menu-item" onclick="window.location.href='customercare.html'"><span class="menu-icon-img">🎧</span> Customer Care</div>
+            <div class="profile-menu-item" onclick="window.location.href='terms.html'"><span class="menu-icon-img">📄</span> Legal Terms</div>
+            <div class="profile-menu-item" onclick="window.location.href='fssai.html'"><span class="menu-icon-img">📜</span> FSSAI License</div>
+            <div style="border-bottom: 5px solid #FCF9F2;"></div>
+            <div class="profile-menu-item" onclick="logoutUser()" style="color: #E76F51;"><span class="menu-icon-img">🚪</span> Logout Safely</div>
+        </div>
+    </div>
+</div>
+
+<div id="comingSoonModal" class="custom-modal">
+    <div class="modal-content">
+        <div style="font-size: 50px; margin-bottom: 10px;">🎁</div>
+        <h2 style="color: #2C363F; margin-bottom: 10px;">Coming Soon!</h2>
+        <p style="color: #888; font-size: 14px; margin-bottom: 20px;">We are working hard to bring you exciting rewards. Stay tuned!</p>
+        <button class="close-modal-btn" onclick="closeComingSoonModal()">Got It</button>
+    </div>
+</div>
+
+<script>
+const db = firebase.database();
+
+let sliderIndex = 0;
+let autoSliderTimer; 
+
+const fallbackBanners = [
+    "https://iili.io/By7qgdQ.jpg",
+    "https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=1200"
+];
+const fallbackCategories = [
+    { id: "chaumin", name: "SANDWICH", img: "https://i.imgur.com/Qa6Y4Qf.png" }
+];
+
+function setSecureCookie(name, value, days) {
+    let expires = "";
+    if (days) {
+        let date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+}
+
+function getSecureCookie(name) {
+    let nameEQ = name + "=";
+    let ca = document.cookie.split(';');
+    for(let i=0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    updateCartBadge(); 
+    
+    const savedEmail = localStorage.getItem("loggedInEmail") || getSecureCookie("loggedInEmail");
+    const savedName = localStorage.getItem("loggedInName") || getSecureCookie("loggedInName");
+    
+    if(savedEmail) {
+        localStorage.setItem("loggedInEmail", savedEmail);
+        if(savedName) localStorage.setItem("loggedInName", savedName);
+        updateUIForLoggedInUser(savedEmail, savedName || "User");
+    } else {
+        updateUIForLoggedOutUser();
+    }
+
+    const localLayout = localStorage.getItem("userCachedHomeLayout");
+    const localCats = localStorage.getItem("userCachedMenuCats");
+    
+    if(localLayout) parseAndBuildLiveBanners(JSON.parse(localLayout));
+    else buildStaticBannersFallback();
+    
+    if(localCats) buildUserCategoriesGrid(JSON.parse(localCats));
+    else buildUserCategoriesGrid(fallbackCategories);
+
+    db.ref('homepage_config').on('value', (snapshot) => {
+        if(snapshot.exists()) {
+            const serverConfig = snapshot.val();
+            localStorage.setItem("userCachedHomeLayout", JSON.stringify(serverConfig));
+            parseAndBuildLiveBanners(serverConfig);
+        }
+    });
+
+    db.ref('menu_categories').on('value', (catSnapshot) => {
+        if(catSnapshot.exists()) {
+            const val = catSnapshot.val();
+            const normalizedCats = Array.isArray(val) ? val : Object.values(val);
+            localStorage.setItem("userCachedMenuCats", JSON.stringify(normalizedCats));
+            buildUserCategoriesGrid(normalizedCats);
+        }
+    });
+
+    startAutoSlider();
+});
+
+document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
+
+window.addEventListener('popstate', function(event) {
+    if (document.getElementById("sideMenu").classList.contains("active")) {
+        closeSideMenu(true);
+    }
+});
+
+function openSideMenu() { 
+    document.getElementById("sideMenu").classList.add("active"); 
+    document.getElementById("sideMenuOverlay").classList.add("active"); 
+    history.pushState({ sideMenuOpen: true }, '');
+}
+
+function closeSideMenu(fromPopState = false) { 
+    document.getElementById("sideMenu").classList.remove("active"); 
+    document.getElementById("sideMenuOverlay").classList.remove("active"); 
+    if (!fromPopState && history.state && history.state.sideMenuOpen) {
+        history.back();
+    }
+}
+
+function buildStaticBannersFallback() {
+    buildLiveSlider(fallbackBanners);
+}
+
+function parseAndBuildLiveBanners(config) {
+    if(config.brandTitle) document.getElementById("displayBrandTitle").innerText = config.brandTitle;
+    let banners = [];
+    if(config.banners) { banners = Array.isArray(config.banners) ? config.banners : Object.values(config.banners); }
+    if(banners.length === 0) banners = fallbackBanners;
+    buildLiveSlider(banners);
+}
+
+function buildLiveSlider(bannersList) {
+    const container = document.getElementById("userSlidesContainer");
+    container.innerHTML = "";
+    bannersList.forEach(src => {
+        const slide = document.createElement("div");
+        slide.classList.add("slide");
+        slide.innerHTML = `<img src="${src}">`;
+        container.appendChild(slide);
+    });
+    sliderIndex = 0;
+    container.style.transform = `translateX(0%)`;
+    buildDotsNavigator(bannersList.length);
+}
+
+function buildDotsNavigator(count) {
+    const dotsContainer = document.getElementById("userDotsContainer");
+    dotsContainer.innerHTML = "";
+    for(let i=0; i<count; i++) {
+        const dot = document.createElement("div");
+        dot.classList.add("dot");
+        if(i === 0) dot.classList.add("active");
+        dotsContainer.appendChild(dot);
+    }
+}
+
+function buildUserCategoriesGrid(categoriesList) {
+    const grid = document.getElementById("userCategoriesContainer");
+    grid.innerHTML = "";
+    
+    categoriesList.forEach(cat => {
+        const card = document.createElement("div");
+        card.classList.add("card");
+        card.onclick = function() {
+            localStorage.setItem("userSelectedCategoryIntent", cat.id);
+            window.location.href = 'menu.html';
+        };
+        card.innerHTML = `<img src="${cat.img}"><h3>${cat.name}</h3>`;
+        grid.appendChild(card);
+    });
+}
+
+function updateSliderPosition() {
+    const container = document.getElementById("userSlidesContainer");
+    const total = document.querySelectorAll("#userSlidesContainer .slide").length;
+    if(total === 0) return;
+    if(sliderIndex >= total) sliderIndex = 0;
+    if(sliderIndex < 0) sliderIndex = total - 1;
+    container.style.transform = `translateX(-${sliderIndex * 100}%)`;
+
+    const dots = document.querySelectorAll("#userDotsContainer .dot");
+    dots.forEach(dot => dot.classList.remove("active"));
+    if(dots[sliderIndex]) dots[sliderIndex].classList.add("active");
+}
+
+function nextSlide() { sliderIndex++; updateSliderPosition(); }
+function prevSlide() { sliderIndex--; updateSliderPosition(); }
+
+function startAutoSlider() {
+    clearInterval(autoSliderTimer);
+    autoSliderTimer = setInterval(() => { nextSlide(); }, 3500);
+}
+
+function updateCartBadge() {
+    let cart = JSON.parse(localStorage.getItem('myCart')) || [];
+    let totalItems = 0;
+    for(let i=0; i<cart.length; i++) { totalItems += cart[i].qty; }
+    const badge = document.getElementById("cartCount");
+    badge.innerText = totalItems;
+    if(totalItems > 0) badge.style.display = "flex";
+    else badge.style.display = "none";
+}
+
+function handleDatabaseAuth() {
+    const email = document.getElementById("emailBox").value.trim().toLowerCase();
+    const pass = document.getElementById("passBox").value;
+    const btn = document.getElementById("proceedBtn");
+    
+    btn.innerText = "Processing..."; 
+    btn.disabled = true;
+    
+    const dbKey = email.replace(/\./g, ',');
+    const encryptedPass = btoa(pass + "_dreamySec"); 
+
+    db.ref('users/' + dbKey).once('value').then((snapshot) => {
+        if (snapshot.exists()) {
+            const userData = snapshot.val();
+            if (userData.password === encryptedPass || userData.password === pass) {
+                saveSessionData(email, userData.name || email.split('@')[0]);
+                showTopAlert("Login Successful! 🎉", "success");
+                updateUIForLoggedInUser(email, userData.name || email.split('@')[0]);
+                closeSideMenu();
+            } else { showTopAlert("Incorrect Password.", "error"); }
+            resetBtnState();
+        } else {
+            const defaultName = email.split('@')[0];
+            db.ref('users/' + dbKey).set({ email: email, password: encryptedPass, name: defaultName }).then(() => {
+                saveSessionData(email, defaultName);
+                showTopAlert("Registration Successful! 🎉", "success");
+                updateUIForLoggedInUser(email, defaultName);
+                closeSideMenu(); resetBtnState();
+            }).catch((err) => { showTopAlert("Database Error: " + err.message, "error"); resetBtnState(); });
+        }
+    }).catch((error) => { showTopAlert("Network Error: " + error.message, "error"); resetBtnState(); });
+}
+
+function saveSessionData(email, name) {
+    localStorage.setItem("loggedInEmail", email);
+    localStorage.setItem("loggedInName", name);
+    setSecureCookie("loggedInEmail", email, 365);
+    setSecureCookie("loggedInName", name, 365);
+}
+
+function resetBtnState() {
+    const btn = document.getElementById("proceedBtn");
+    btn.innerText = "Proceed"; btn.disabled = false; validateLogin();
+}
+
+function logoutUser() {
+    localStorage.removeItem("loggedInEmail"); 
+    localStorage.removeItem("loggedInName");
+    setSecureCookie("loggedInEmail", "", -1);
+    setSecureCookie("loggedInName", "", -1);
+    
+    updateUIForLoggedOutUser(); 
+    showTopAlert("Logged Out Successfully", "success"); 
+    closeSideMenu();
+}
+
+function updateUIForLoggedInUser(email, name) {
+    document.getElementById("loginFormContainer").style.display = "none";
+    document.getElementById("profileContainer").style.display = "block";
+    const formatName = name.charAt(0).toUpperCase() + name.slice(1);
+    document.getElementById("profileName").innerHTML = formatName + ` <span class="edit-icon" onclick="window.location.href='editprofile.html'">✏️</span>`;
+    document.getElementById("profileEmail").innerText = email;
+}
+
+function updateUIForLoggedOutUser() {
+    document.getElementById("loginFormContainer").style.display = "flex";
+    document.getElementById("profileContainer").style.display = "none";
+    document.getElementById("emailBox").value = ""; document.getElementById("passBox").value = "";
+    validateLogin(); 
+}
+
+const emailInput = document.getElementById('emailBox');
+const passInput = document.getElementById('passBox');
+const proceedBtn = document.getElementById('proceedBtn');
+
+function validateLogin() {
+    if (emailInput.value.includes("@gmail.com") && passInput.value.length >= 8) {
+        proceedBtn.disabled = false; proceedBtn.style.background = "var(--accent-color)"; proceedBtn.style.cursor = "pointer";
+    } else {
+        proceedBtn.disabled = true; proceedBtn.style.background = "#d9dada"; proceedBtn.style.cursor = "not-allowed"; proceedBtn.innerText = "Proceed";
+    }
+}
+emailInput.addEventListener('input', validateLogin); passInput.addEventListener('input', validateLogin);
+
+function showTopAlert(msg, type) {
+    const alertBox = document.getElementById("topAlert");
+    document.getElementById("topAlertMsg").innerText = msg;
+    alertBox.style.background = type === 'error' ? "#e53300" : "#4CAF50";
+    alertBox.classList.add("show");
+    setTimeout(() => closeTopAlert(), 3000);
+}
+function closeTopAlert() { document.getElementById("topAlert").classList.remove("show"); }
+
+function showComingSoonModal() {
+    const modal = document.getElementById("comingSoonModal"); modal.style.display = "flex";
+    setTimeout(() => { modal.classList.add("show"); }, 10);
+}
+function closeComingSoonModal() {
+    const modal = document.getElementById("comingSoonModal"); modal.classList.remove("show");
+    setTimeout(() => { modal.style.display = "none"; }, 300);
+}
+</script>
+</body>
+</html>

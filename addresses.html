@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Dreamy Delight - Saved Addresses</title>
+<style>
+    /* SOFT & PREMIUM COLOR PALETTE */
+    :root {
+        --bg-color: #FCF9F2; 
+        --primary-dark: #2C363F; 
+        --accent-color: #E76F51; 
+        --accent-light: #F4A261; 
+        --text-muted: #888888;
+        --card-bg: #FFFFFF;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+    body { background: var(--bg-color); padding-bottom: 90px; overflow-x: hidden; color: var(--primary-dark); }
+    ::-webkit-scrollbar { display: none; }
+
+    /* HEADER - LIGHT YELLOW THEME */
+    .topbar{ height: 65px; background: #FFE66D; color: var(--primary-dark); display:flex; align-items:center; padding:0 15px; position: sticky; top:0; z-index:100; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; }
+    .back-arrow { font-size: 26px; cursor: pointer; margin-right: 15px; font-weight: bold; }
+    .top-title{ font-size: 22px; font-weight:900; white-space: nowrap; color: #FF0000; font-family: "Trebuchet MS", sans-serif; letter-spacing: 0.5px; }
+
+    /* MAIN CONTENT */
+    .main-addresses { padding: 20px 15px; }
+
+    /* LOGIN PLACEHOLDER */
+    .login-required-box { display: none; text-align: center; padding: 50px 20px; }
+    .login-required-box h3 { font-size: 22px; margin-bottom: 10px; color: var(--primary-dark); font-weight: 900; }
+    .login-required-box p { color: var(--text-muted); margin-bottom: 25px; font-size: 14px; font-weight: bold; }
+    .login-trigger-btn { padding: 14px 30px; background: var(--accent-color); color: white; border: none; border-radius: 15px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 5px 15px rgba(231, 111, 81, 0.2); transition: 0.3s; }
+    .login-trigger-btn:active { transform: scale(0.96); }
+
+    /* ADD NEW BUTTON */
+    .add-address-btn { width: 100%; padding: 16px; background: var(--card-bg); border: 2px dashed var(--accent-color); border-radius: 20px; color: var(--accent-color); font-size: 16px; font-weight: bold; cursor: pointer; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+    .add-address-btn:active { transform: scale(0.98); background: #FFF5F0; }
+
+    /* ADDRESS CARDS */
+    @keyframes fadeInUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+    .address-card { background: var(--card-bg); border-radius: 20px; padding: 18px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); position: relative; animation: fadeInUp 0.5s ease forwards; border: 1px solid rgba(0,0,0,0.02); }
+    .address-tag { position: absolute; top: 16px; right: 16px; background: #FFF5F0; color: var(--accent-color); padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid rgba(231, 111, 81, 0.2); }
+    .address-name { font-size: 17px; font-weight: 900; color: var(--primary-dark); margin-bottom: 4px; padding-right: 60px; }
+    .address-phone { font-size: 13px; color: var(--text-muted); font-weight: bold; margin-bottom: 12px; }
+    .address-text { font-size: 14px; color: #555; line-height: 1.5; margin-bottom: 15px; font-weight: 500; }
+    .address-actions { display: flex; gap: 12px; border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 15px; }
+    .action-btn { flex: 1; padding: 10px; text-align: center; border-radius: 12px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.2s; border: none; }
+    .btn-edit { background: var(--bg-color); color: var(--primary-dark); border: 1px solid rgba(0,0,0,0.05); }
+    .btn-delete { background: #ffebee; color: #d32f2f; }
+    .btn-edit:active, .btn-delete:active { transform: scale(0.95); }
+
+    /* ADDRESS FORM MODAL */
+    .form-modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(44, 54, 63, 0.7); z-index: 1001; backdrop-filter: blur(3px); align-items: flex-end; }
+    .form-modal { background: var(--bg-color); width: 100%; max-height: 90vh; border-radius: 25px 25px 0 0; padding: 25px 20px; overflow-y: auto; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); display: flex; flex-direction: column; }
+    .form-modal.show { transform: translateY(0); }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .modal-header h3 { font-size: 20px; color: var(--primary-dark); font-weight: 900; }
+    .close-form-btn { background: none; border: none; font-size: 28px; color: var(--text-muted); cursor: pointer; }
+    
+    .form-section { background: var(--card-bg); padding: 15px; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02); }
+    .form-section-title { font-size: 12px; color: var(--text-muted); font-weight: bold; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px; }
+    .input-box { width: 100%; padding: 14px; border: 1px solid rgba(0,0,0,0.08); border-radius: 12px; margin-bottom: 12px; font-size: 14px; outline: none; background: #FAFAFA; transition: 0.3s; font-weight: bold; color: var(--primary-dark); }
+    .input-box:focus { border-color: var(--accent-color); background: white; }
+    
+    /* Tag Pills */
+    .tag-selector { display: flex; gap: 10px; margin-bottom: 5px; }
+    .tag-pill { flex: 1; padding: 10px; text-align: center; border-radius: 12px; border: 1px solid rgba(0,0,0,0.08); color: var(--text-muted); font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.3s; background: white; }
+    .tag-pill.active { background: var(--accent-color); color: white; border-color: var(--accent-color); box-shadow: 0 4px 10px rgba(231, 111, 81, 0.2); }
+
+    .save-address-btn { width: 100%; padding: 16px; background: var(--primary-dark); color: white; font-size: 16px; font-weight: bold; border: none; border-radius: 15px; cursor: pointer; box-shadow: 0 5px 15px rgba(44, 54, 63, 0.3); margin-top: 10px; transition: 0.3s; }
+    .save-address-btn:active { transform: scale(0.96); }
+
+    /* FLOATING BOTTOM NAV */
+    .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px 0 15px 0; z-index: 100; box-shadow: 0 -5px 25px rgba(0,0,0,0.06); border-top-left-radius: 25px; border-top-right-radius: 25px; }
+    .bottom-nav div { color: var(--text-muted); text-align: center; font-size: 12px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+    .icon { font-size: 24px; margin-bottom: 3px; font-style: normal; transition: transform 0.2s; }
+    .bottom-nav div:active .icon { transform: scale(0.85); }
+    .icon-wrapper { position: relative; display: inline-block; }
+    .active-nav { color: var(--accent-color) !important; }
+    .cart-badge { position: absolute; top: -5px; right: -8px; background: var(--accent-color); color: white; font-size: 10px; font-weight: bold; border-radius: 50%; width: 18px; height: 18px; display: none; align-items: center; justify-content: center; border: 2px solid white; box-sizing: content-box; }
+
+    /* SIDE MENU UPDATES */
+    .side-menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(44, 54, 63, 0.7); z-index: 998; opacity: 0; pointer-events: none; transition: 0.3s ease-in-out; backdrop-filter: blur(3px); }
+    .side-menu-overlay.active { opacity: 1; pointer-events: auto; }
+    
+    .side-menu { position: fixed; top: 0; left: -100%; width: 80%; max-width: 320px; height: 100vh; background: var(--bg-color); z-index: 999; transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1); display: flex; flex-direction: column; overflow-y: auto; box-shadow: 5px 0 25px rgba(0,0,0,0.15); }
+    .side-menu.active { left: 0; }
+    .side-menu-top { display: flex; justify-content: space-between; align-items: center; padding: 25px 20px 10px 20px; }
+    .back-btn { font-size: 26px; color: var(--primary-dark); cursor: pointer; background: none; border: none; }
+    
+    .login-container { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 0 30px; }
+    .splash-img { width: 180px; height: 180px; background: url('https://cdn-icons-png.flaticon.com/512/3135/3135715.png') no-repeat center center; background-size: contain; margin-bottom: 20px; opacity: 0.9; }
+    .login-title { font-size: 28px; color: var(--primary-dark); font-weight: 900; margin-bottom: 30px; letter-spacing: 1px; }
+    .input-group { display: flex; align-items: center; width: 100%; background: white; padding: 15px 20px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); }
+    .email-input { border: none; background: transparent; outline: none; font-size: 15px; color: var(--primary-dark); width: 100%; font-weight: bold; }
+    .proceed-btn { width: 100%; background: #d9dada; color: white; font-size: 18px; font-weight: bold; border: none; padding: 16px; border-radius: 15px; cursor: not-allowed; transition: 0.3s ease; margin-top: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+    
+    .login-disclaimer { font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 25px; line-height: 1.5; padding: 0 5px; }
+
+    .profile-container { display: none; width: 100%; padding: 0 20px; padding-bottom: 50px; }
+    .profile-header-info { display: flex; align-items: center; gap: 15px; margin-bottom: 35px; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.02); }
+    .avatar { width: 60px; height: 60px; background: #FFF9F5 url('https://cdn-icons-png.flaticon.com/512/3135/3135715.png') no-repeat center center; background-size: contain; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 2px solid var(--accent-light); }
+    
+    .user-details h2 { color: var(--primary-dark); font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+    .edit-icon { font-size: 16px; cursor: pointer; color: var(--accent-color); transition: transform 0.2s; background: #FFF5F0; padding: 5px; border-radius: 50%; display: flex; }
+    .edit-icon:active { transform: scale(0.8); }
+    .user-details p { color: var(--text-muted); font-size: 13px; font-weight: bold; margin-top: 4px; }
+    
+    .profile-menu-list { display: flex; flex-direction: column; background: white; border-radius: 20px; padding: 10px 0; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02); }
+    .profile-menu-item { display: flex; align-items: center; gap: 15px; padding: 16px 20px; color: var(--primary-dark); font-size: 15px; font-weight: bold; cursor: pointer; border-bottom: 1px solid rgba(0,0,0,0.03); transition: background 0.2s; }
+    .profile-menu-item:active { background: #FCF9F2; }
+    .profile-menu-item:last-child { border-bottom: none; }
+    .menu-icon-img { font-size: 20px; width: 25px; text-align: center; }
+
+    /* ALERTS & MODALS */
+    .top-alert { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: #4CAF50; color: white; padding: 15px 20px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.2); display: flex; justify-content: space-between; align-items: center; z-index: 10000; transition: top 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+    .top-alert.show { top: 20px; }
+    .top-alert-msg { font-size: 14px; font-weight: bold; flex: 1; text-align: center; }
+</style>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="firebase-config.js"></script>
+</head>
+<body>
+
+<div class="top-alert" id="topAlert"><div class="top-alert-msg" id="topAlertMsg">Notification</div></div>
+
+<div class="topbar">
+    <div class="back-arrow" onclick="goBackToMenu()">←</div>
+    <div class="top-title">Saved Addresses</div>
+</div>
+
+<div class="main-addresses">
+    <div class="login-required-box" id="logoutNotice">
+        <div style="font-size: 60px; margin-bottom: 15px;">📍</div>
+        <h3>Login Required</h3>
+        <p>Login to save and manage your delivery addresses for faster checkout.</p>
+        <button class="login-trigger-btn" onclick="openSideMenu()">Login Now</button>
+    </div>
+
+    <div id="addressSection" style="display: none;">
+        <button class="add-address-btn" onclick="openAddressForm()">
+            <span style="font-size: 20px;">+</span> Add New Address
+        </button>
+        <div id="addressListContainer"></div>
+    </div>
+</div>
+
+<div class="form-modal-overlay" id="formModalOverlay" onclick="closeAddressForm(event)">
+    <div class="form-modal" id="formModal" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3 id="formTitle">Add Delivery Address</h3>
+            <button class="close-form-btn" onclick="closeAddressForm()">×</button>
+        </div>
+
+        <input type="hidden" id="editAddressId">
+
+        <div class="form-section">
+            <div class="form-section-title">Contact Details</div>
+            <input type="text" id="contactName" class="input-box" placeholder="Receiver's Name (e.g. John)">
+            <input type="tel" id="contactPhone" class="input-box" placeholder="10-digit Mobile Number" maxlength="10">
+        </div>
+
+        <div class="form-section">
+            <div class="form-section-title">Location Details</div>
+            <input type="text" id="houseNo" class="input-box" placeholder="Flat / House No. / Building Name">
+            <input type="text" id="street" class="input-box" placeholder="Street / Area / Sector">
+            <input type="text" id="landmark" class="input-box" placeholder="Landmark (Optional)">
+            <!-- PINCODE PLACEHOLDER UPDATED TO GUIDE USER -->
+            <input type="text" id="cityPin" class="input-box" placeholder="City & Pincode (Only 832101, 832102)">
+        </div>
+
+        <div class="form-section">
+            <div class="form-section-title">Save As</div>
+            <div class="tag-selector">
+                <div class="tag-pill active" onclick="selectTag(this, 'Home')">🏠 Home</div>
+                <div class="tag-pill" onclick="selectTag(this, 'Work')">💼 Work</div>
+                <div class="tag-pill" onclick="selectTag(this, 'Other')">📍 Other</div>
+            </div>
+            <input type="hidden" id="addressTag" value="Home">
+        </div>
+
+        <button class="save-address-btn" id="saveAddrBtn" onclick="saveAddressToFirebase()">Save Address</button>
+    </div>
+</div>
+
+<div class="bottom-nav">
+    <div onclick="window.location.replace('index.html')"><div class="icon">🏠</div>Home</div>
+    <div onclick="window.location.replace('menu.html')"><div class="icon">🍔</div>Menu</div>
+    <div onclick="window.location.replace('cart.html')">
+        <div class="icon-wrapper"><div class="icon">🛒</div><span class="cart-badge" id="cartCount">0</span></div>
+        <div>Cart</div>
+    </div>
+    <div onclick="alert('Rewards Section Coming Soon!')"><div class="icon">👑</div>Rewards</div>
+</div>
+
+<div class="side-menu-overlay" id="sideMenuOverlay" onclick="closeSideMenu()"></div>
+<div class="side-menu" id="sideMenu">
+    <div class="side-menu-top"><button class="back-btn" onclick="closeSideMenu()">←</button></div>
+    
+    <div class="login-container" id="loginFormContainer">
+        <div class="splash-img"></div><h1 class="login-title">LOGIN</h1>
+        <div style="width: 100%;">
+            <div class="input-group"><input type="email" id="emailBox" class="email-input" placeholder="Enter your email (@gmail.com)"></div>
+            <div class="input-group"><input type="password" id="passBox" class="email-input" placeholder="Enter password (Min 8 chars)"></div>
+            <button id="proceedBtn" class="proceed-btn" disabled onclick="handleDatabaseAuth()">Proceed</button>
+        </div>
+        <p class="login-disclaimer">Note: We currently do not have a password reset feature. If you forget your password, please contact customer care or create a new ID.</p>
+    </div>
+
+    <div class="profile-container" id="profileContainer">
+        <div class="profile-header-info">
+            <div class="avatar"></div>
+            <div class="user-details">
+                <h2 id="profileName">User <span class="edit-icon" onclick="window.location.href='editprofile.html'">✏️</span></h2>
+                <p id="profileEmail">user@gmail.com</p>
+            </div>
+        </div>
+        <div class="profile-menu-list">
+            <div class="profile-menu-item" onclick="window.location.href='order.html'"><span class="menu-icon-img">🕒</span> Recent Orders</div>
+            <div class="profile-menu-item" onclick="closeSideMenu()"><span class="menu-icon-img">📍</span> Saved Addresses</div>
+            <div style="border-bottom: 5px solid #FCF9F2;"></div>
+            <div class="profile-menu-item" onclick="window.location.href='customercare.html'"><span class="menu-icon-img">💬</span> Customer Care</div>
+            <div class="profile-menu-item" onclick="window.location.href='terms.html'"><span class="menu-icon-img">📄</span> Legal Terms</div>
+            <div class="profile-menu-item" onclick="window.location.href='fssai.html'"><span class="menu-icon-img">📜</span> FSSAI</div>
+            <div style="border-bottom: 5px solid #FCF9F2;"></div>
+            <div class="profile-menu-item" onclick="logoutUser()" style="color: #E76F51;"><span class="menu-icon-img">🚪</span> Logout</div>
+        </div>
+    </div>
+</div>
+
+<script>
+const db = firebase.database();
+let userDbKey = "";
+let currentAddresses = {};
+
+let fetchedProfileName = "";
+let fetchedProfileMobile = "";
+
+document.addEventListener("DOMContentLoaded", () => {
+    updateCartBadge();
+    checkAppLoginState();
+});
+
+document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
+
+/* ==========================================
+   🚀 BULLETPROOF HISTORY LOGIC 🚀
+   ========================================== */
+history.replaceState({ page: 'address_base' }, null, location.href);
+history.pushState({ page: 'address_trap' }, null, location.href);
+
+window.addEventListener('popstate', function(event) {
+    const sideMenu = document.getElementById("sideMenu");
+    const formOverlay = document.getElementById("formModalOverlay");
+    
+    // Prioritize closing form modal if open
+    if (formOverlay.style.display === "flex") {
+        closeAddressForm(null, true);
+        history.pushState({ page: 'address_trap' }, null, location.href);
+    } 
+    // Otherwise close side menu if open
+    else if (sideMenu.classList.contains("active")) {
+        sideMenu.classList.remove("active");
+        document.getElementById("sideMenuOverlay").classList.remove("active");
+        history.pushState({ page: 'address_trap' }, null, location.href);
+    } 
+    // Go back to Menu if nothing is open
+    else {
+        window.location.replace('index.html');
+    }
+});
+
+function goBackToMenu() { window.location.replace('index.html'); }
+
+function openSideMenu() { 
+    document.getElementById("sideMenu").classList.add("active");
+    document.getElementById("sideMenuOverlay").classList.add("active");
+    history.pushState({ sideMenuOpen: true }, null, location.href); 
+}
+function closeSideMenu() { 
+    if (document.getElementById("sideMenu").classList.contains("active")) {
+        history.back();
+    }
+}
+
+function checkAppLoginState() {
+    const savedEmail = localStorage.getItem("loggedInEmail");
+    const savedName = localStorage.getItem("loggedInName");
+    const addressSection = document.getElementById("addressSection");
+    const logoutNotice = document.getElementById("logoutNotice");
+
+    if(savedEmail) {
+        userDbKey = savedEmail.replace(/\./g, ',');
+        updateUIForLoggedInUser(savedEmail, savedName);
+        logoutNotice.style.display = "none";
+        addressSection.style.display = "block";
+        
+        fetchAddressesFromFirebase();
+        fetchUserProfileData();
+    } else {
+        updateUIForLoggedOutUser();
+        logoutNotice.style.display = "block";
+        addressSection.style.display = "none";
+    }
+}
+
+function fetchUserProfileData() {
+    db.ref('users/' + userDbKey).once('value').then((snapshot) => {
+        if(snapshot.exists()) {
+            const data = snapshot.val();
+            fetchedProfileName = data.name || localStorage.getItem("loggedInName") || "";
+            fetchedProfileMobile = data.mobile || "";
+        }
+    });
+}
+
+function fetchAddressesFromFirebase() {
+    db.ref('users/' + userDbKey + '/addresses').on('value', (snapshot) => {
+        currentAddresses = snapshot.exists() ? snapshot.val() : {};
+        renderAddressCards();
+    });
+}
+
+function renderAddressCards() {
+    const container = document.getElementById("addressListContainer");
+    container.innerHTML = "";
+    const addressKeys = Object.keys(currentAddresses);
+    
+    if(addressKeys.length === 0) {
+        container.innerHTML = `<p style="text-align:center; color:var(--text-muted); font-size:14px; margin-top:20px; font-weight:bold;">No saved addresses yet. Add one to get started!</p>`;
+        return;
+    }
+
+    addressKeys.forEach((key) => {
+        const addr = currentAddresses[key];
+        const fullAddrStr = `${addr.house}, ${addr.street}${addr.landmark ? ', ' + addr.landmark : ''}, ${addr.cityPin}`;
+        
+        container.innerHTML += `
+            <div class="address-card">
+                <div class="address-tag">${addr.tag}</div>
+                <div class="address-name">${addr.name}</div>
+                <div class="address-phone">📞 ${addr.phone}</div>
+                <div class="address-text">${fullAddrStr}</div>
+                <div class="address-actions">
+                    <button class="action-btn btn-edit" onclick="openAddressForm('${key}')">Edit</button>
+                    <button class="action-btn btn-delete" onclick="deleteAddress('${key}')">Delete</button>
+                </div>
+            </div>
+        `;
+    });
+}
+
+function openAddressForm(editKey = null) {
+    const overlay = document.getElementById("formModalOverlay");
+    const modal = document.getElementById("formModal");
+    
+    document.getElementById("formTitle").innerText = editKey ? "Edit Address" : "Add Delivery Address";
+    document.getElementById("editAddressId").value = editKey || "";
+    
+    if(editKey && currentAddresses[editKey]) {
+        const data = currentAddresses[editKey];
+        document.getElementById("contactName").value = data.name;
+        document.getElementById("contactPhone").value = data.phone;
+        document.getElementById("houseNo").value = data.house;
+        document.getElementById("street").value = data.street;
+        document.getElementById("landmark").value = data.landmark || "";
+        document.getElementById("cityPin").value = data.cityPin;
+        setTagActive(data.tag);
+    } else {
+        document.getElementById("contactName").value = fetchedProfileName;
+        document.getElementById("contactPhone").value = fetchedProfileMobile;
+        document.getElementById("houseNo").value = "";
+        document.getElementById("street").value = "";
+        document.getElementById("landmark").value = "";
+        document.getElementById("cityPin").value = "";
+        setTagActive("Home");
+    }
+
+    overlay.style.display = "flex";
+    setTimeout(() => { modal.classList.add("show"); }, 10);
+    history.pushState({ modalOpen: true }, null, location.href);
+}
+
+function closeAddressForm(e = null, fromPopState = false) {
+    if (e && e.target !== document.getElementById("formModalOverlay")) return;
+    
+    const overlay = document.getElementById("formModalOverlay");
+    if (overlay.style.display === "flex" && !fromPopState) {
+        history.back(); 
+    } else {
+        const modal = document.getElementById("formModal");
+        modal.classList.remove("show");
+        setTimeout(() => { overlay.style.display = "none"; }, 300);
+    }
+}
+
+function selectTag(element, tagValue) {
+    document.querySelectorAll(".tag-pill").forEach(el => el.classList.remove("active"));
+    element.classList.add("active");
+    document.getElementById("addressTag").value = tagValue;
+}
+
+function setTagActive(tagValue) {
+    document.querySelectorAll(".tag-pill").forEach(el => {
+        if(el.innerText.includes(tagValue)) { el.classList.add("active"); } 
+        else { el.classList.remove("active"); }
+    });
+    document.getElementById("addressTag").value = tagValue;
+}
+
+function saveAddressToFirebase() {
+    const btn = document.getElementById("saveAddrBtn");
+    const editKey = document.getElementById("editAddressId").value;
+    
+    const addrData = {
+        name: document.getElementById("contactName").value.trim(),
+        phone: document.getElementById("contactPhone").value.trim(),
+        house: document.getElementById("houseNo").value.trim(),
+        street: document.getElementById("street").value.trim(),
+        landmark: document.getElementById("landmark").value.trim(),
+        cityPin: document.getElementById("cityPin").value.trim(),
+        tag: document.getElementById("addressTag").value
+    };
+
+    if(!addrData.name || !addrData.phone || !addrData.house || !addrData.street || !addrData.cityPin) {
+        showTopAlert("Please fill all required fields!", "error"); return;
+    }
+    if(addrData.phone.length < 10) {
+        showTopAlert("Enter a valid 10-digit number!", "error"); return;
+    }
+
+    // ==========================================
+    // 🚀 NEW PINCODE RESTRICTION LOGIC 🚀
+    // ==========================================
+    if (!addrData.cityPin.includes("832101") && !addrData.cityPin.includes("832102")) {
+        showTopAlert("Delivery not possible here", "error"); 
+        return;
+    }
+
+    btn.innerText = "Saving..."; btn.disabled = true;
+    const refKey = editKey ? editKey : "addr_" + Date.now();
+
+    db.ref('users/' + userDbKey + '/addresses/' + refKey).set(addrData).then(() => {
+        showTopAlert("Address saved successfully!", "success");
+        // Using programmatic click on overlay to close smoothly via history
+        closeAddressForm(null, false);
+        btn.innerText = "Save Address"; btn.disabled = false;
+    }).catch((err) => {
+        showTopAlert(err.message, "error");
+        btn.innerText = "Save Address"; btn.disabled = false;
+    });
+}
+
+function deleteAddress(key) {
+    if(confirm("Are you sure you want to delete this address?")) {
+        db.ref('users/' + userDbKey + '/addresses/' + key).remove().then(() => {
+            showTopAlert("Address deleted!", "success");
+        });
+    }
+}
+
+function updateCartBadge() {
+    let cart = JSON.parse(localStorage.getItem('myCart')) || [];
+    let totalItems = 0;
+    cart.forEach(item => totalItems += item.qty);
+    const badge = document.getElementById("cartCount");
+    badge.innerText = totalItems;
+    badge.style.display = totalItems > 0 ? "flex" : "none";
+}
+
+function handleDatabaseAuth() {
+    const email = document.getElementById("emailBox").value.trim().toLowerCase();
+    const pass = document.getElementById("passBox").value;
+    const btn = document.getElementById("proceedBtn");
+    btn.innerText = "Processing..."; btn.disabled = true;
+    const dbKey = email.replace(/\./g, ',');
+    const encryptedPass = btoa(pass + "_dreamySec");
+
+    db.ref('users/' + dbKey).once('value').then((snapshot) => {
+        if (snapshot.exists()) {
+            const userData = snapshot.val();
+            if (userData.password === encryptedPass || userData.password === pass) {
+                localStorage.setItem("loggedInEmail", email);
+                localStorage.setItem("loggedInName", userData.name || email.split('@')[0]);
+                closeSideMenu(); checkAppLoginState();
+            } else { showTopAlert("Incorrect Password.", "error"); }
+        } else {
+            const defaultName = email.split('@')[0];
+            db.ref('users/' + dbKey).set({ email: email, password: encryptedPass, name: defaultName }).then(() => {
+                localStorage.setItem("loggedInEmail", email);
+                localStorage.setItem("loggedInName", defaultName);
+                closeSideMenu(); checkAppLoginState();
+            });
+        }
+        resetBtnState();
+    }).catch((err) => { showTopAlert("Error: " + err.message, "error"); resetBtnState(); });
+}
+
+function resetBtnState() {
+    const btn = document.getElementById("proceedBtn");
+    btn.innerText = "Proceed"; btn.disabled = false; validateLogin();
+}
+
+function logoutUser() {
+    localStorage.removeItem("loggedInEmail"); localStorage.removeItem("loggedInName");
+    closeSideMenu(); checkAppLoginState();
+}
+
+function updateUIForLoggedInUser(email, name) {
+    document.getElementById("loginFormContainer").style.display = "none";
+    document.getElementById("profileContainer").style.display = "block";
+    document.getElementById("profileName").innerHTML = (name.charAt(0).toUpperCase() + name.slice(1)) + ` <span class="edit-icon" onclick="window.location.href='editprofile.html'">✏️</span>`;
+    document.getElementById("profileEmail").innerText = email;
+}
+
+function updateUIForLoggedOutUser() {
+    document.getElementById("loginFormContainer").style.display = "flex";
+    document.getElementById("profileContainer").style.display = "none";
+    document.getElementById("emailBox").value = ""; document.getElementById("passBox").value = "";
+    validateLogin(); 
+}
+
+const emailInput = document.getElementById('emailBox');
+const passInput = document.getElementById('passBox');
+const proceedBtn = document.getElementById('proceedBtn');
+function validateLogin() {
+    if (emailInput.value.includes("@gmail.com") && passInput.value.length >= 8) {
+        proceedBtn.disabled = false; proceedBtn.style.background = "var(--accent-color)"; proceedBtn.style.cursor = "pointer";
+    } else {
+        proceedBtn.disabled = true; proceedBtn.style.background = "#d9dada"; proceedBtn.style.cursor = "not-allowed"; proceedBtn.innerText = "Proceed";
+    }
+}
+emailInput.addEventListener('input', validateLogin); passInput.addEventListener('input', validateLogin);
+
+function showTopAlert(msg, type) {
+    const alertBox = document.getElementById("topAlert"); document.getElementById("topAlertMsg").innerText = msg;
+    alertBox.style.background = type === 'error' ? "#e53300" : "#4CAF50"; alertBox.classList.add("show");
+    setTimeout(() => { alertBox.classList.remove("show"); }, 3000);
+}
+</script>
+</body>
+</html>

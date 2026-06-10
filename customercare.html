@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Pepper Dreamy - Help & Support</title>
+<style>
+    /* SOFT & PREMIUM COLOR PALETTE (MATCHED WITH ORDER.HTML) */
+    :root {
+        --bg-color: #FCF9F2; 
+        --primary-dark: #2C363F; 
+        --accent-color: #E76F51; 
+        --accent-light: #F4A261; 
+        --text-muted: #888888;
+        --card-bg: #FFFFFF;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+    body { background: var(--bg-color); padding-bottom: 90px; overflow-x: hidden; color: var(--primary-dark); }
+    ::-webkit-scrollbar { display: none; }
+
+    /* HEADER - MATCHED LIGHT YELLOW THEME */
+    .topbar { height: 65px; background: #FFE66D; color: var(--primary-dark); display: flex; align-items: center; padding: 0 15px; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; }
+    .back-arrow { font-size: 26px; cursor: pointer; margin-right: 15px; font-weight: bold; color: var(--primary-dark); }
+    .top-title { font-size: 22px; font-weight: 900; white-space: nowrap; color: #FF0000; font-family: "Trebuchet MS", sans-serif; letter-spacing: 0.5px; }
+
+    /* MAIN CONTAINER */
+    .main-container { padding: 15px; }
+
+    /* HEADER BANNER - DESIGN ACCENT GRADIENT */
+    .support-banner { background: linear-gradient(135deg, var(--accent-color), var(--accent-light)); border-radius: 20px; padding: 20px; color: white; text-align: center; margin-bottom: 25px; box-shadow: 0 4px 12px rgba(231, 111, 81, 0.15); }
+    .support-banner h2 { font-size: 22px; font-weight: 900; margin-bottom: 5px; }
+    .support-banner p { font-size: 13px; opacity: 0.9; line-height: 1.4; font-weight: bold; }
+
+    /* QUICK CONTACT CARDS */
+    .section-title { font-size: 16px; font-weight: bold; color: var(--primary-dark); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
+    
+    .contact-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 25px; }
+    
+    @keyframes slideUp { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
+    .contact-card { background: var(--card-bg); padding: 20px; border-radius: 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.04); cursor: pointer; border: 1px solid rgba(0,0,0,0.02); transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 15px; animation: slideUp 0.4s ease forwards; }
+    .contact-card:active { transform: scale(0.96); }
+    
+    .contact-icon { font-size: 35px; }
+    .contact-info { text-align: left; }
+    .contact-title { font-size: 16px; font-weight: bold; color: var(--primary-dark); margin-bottom: 3px; }
+    .contact-sub { font-size: 12px; color: var(--text-muted); font-weight: bold; }
+    
+    .whatsapp-card { border-left: 5px solid #25D366; }
+    .call-card { border-left: 5px solid #3498db; }
+
+    /* BOTTOM ILLUSTRATION */
+    .support-footer { text-align: center; margin-top: 40px; font-size: 50px; opacity: 0.2; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="back-arrow" onclick="window.history.back()">←</div>
+    <div class="top-title">Help & Support</div>
+</div>
+
+<div class="main-container">
+    <div class="support-banner">
+        <h2>We are here to help! 🤝</h2>
+        <p>Facing issues with your dreamy food or delivery? Reach out to us instantly.</p>
+    </div>
+
+    <div class="section-title">Direct Connect</div>
+    
+    <div class="contact-grid">
+        <div class="contact-card call-card" onclick="window.location.href='tel:+917070205010'">
+            <div class="contact-icon">📞</div>
+            <div class="contact-info">
+                <div class="contact-title">Call Restaurant</div>
+                <div class="contact-sub">Speak directly with our team</div>
+            </div>
+        </div>
+
+        <div class="contact-card whatsapp-card" onclick="openWhatsApp()">
+            <div class="contact-icon">💬</div>
+            <div class="contact-info">
+                <div class="contact-title">WhatsApp Support</div>
+                <div class="contact-sub">Drop a message for quick help</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="support-footer">
+        🎧
+    </div>
+</div>
+
+<script>
+// Prevent WebView pinch/zoom
+document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
+
+// Set your actual business WhatsApp number here (with country code, no + sign)
+const adminWhatsAppNumber = "917070205010"; 
+
+function openWhatsApp() {
+    const text = encodeURIComponent("Hi Dreamy Delight , I am facing some issues !");
+    window.location.href = `https://wa.me/${adminWhatsAppNumber}?text=${text}`;
+}
+</script>
+
+</body>
+</html>

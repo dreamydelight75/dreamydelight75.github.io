@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Dreamy Delight - Secure Checkout</title>
+<style>
+    /* SOFT & PREMIUM COLOR PALETTE */
+    :root {
+        --bg-color: #FCF9F2; 
+        --primary-dark: #2C363F; 
+        --accent-color: #E76F51; 
+        --accent-light: #F4A261; 
+        --text-muted: #888888;
+        --card-bg: #FFFFFF;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+    body { background: var(--bg-color); padding-bottom: 90px; overflow-x: hidden; color: var(--primary-dark); }
+    ::-webkit-scrollbar { display: none; }
+
+    /* HEADER - LIGHT YELLOW THEME */
+    .topbar{ height: 65px; background: #FFE66D; color: var(--primary-dark); display:flex; align-items:center; padding:0 15px; position: sticky; top:0; z-index:100; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; }
+    .back-arrow { font-size: 26px; cursor: pointer; margin-right: 15px; font-weight: bold; }
+    .top-title{ font-size: 22px; font-weight:900; white-space: nowrap; color: #FF0000; font-family: "Trebuchet MS", sans-serif; letter-spacing: 0.5px; }
+
+    /* MAIN CONTAINER */
+    .main-payment { padding: 20px 15px; }
+
+    /* AMOUNT CARD */
+    .amount-card { background: linear-gradient(135deg, var(--accent-color), #D84315); color: white; border-radius: 25px; padding: 25px 20px; text-align: center; box-shadow: 0 5px 20px rgba(231, 111, 81, 0.3); margin-bottom: 25px; }
+    .amount-label { font-size: 14px; font-weight: bold; opacity: 0.9; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
+    .amount-value { font-size: 38px; font-weight: 900; letter-spacing: 1px; }
+
+    /* SECTION TITLE */
+    .section-title { font-size: 16px; font-weight: 900; color: var(--primary-dark); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 20px; }
+
+    /* ADDRESS SELECTION */
+    .address-option { background: var(--card-bg); border-radius: 20px; padding: 18px; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); cursor: pointer; border: 2px solid transparent; transition: 0.3s; }
+    .address-option.active { border-color: #4CAF50; background: #f1f8e9; }
+    .addr-details { flex: 1; }
+    .addr-tag { font-size: 11px; background: #FFF5F0; color: var(--accent-color); padding: 4px 10px; border-radius: 8px; font-weight: 900; text-transform: uppercase; margin-bottom: 8px; display: inline-block; border: 1px solid rgba(231, 111, 81, 0.2); }
+    .addr-text { font-size: 14px; color: var(--primary-dark); line-height: 1.4; font-weight: bold; }
+    
+    .no-address-box { text-align: center; padding: 25px 20px; background: white; border-radius: 20px; border: 2px dashed var(--accent-light); box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+    .add-addr-btn { background: var(--primary-dark); color: white; padding: 12px 25px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 15px; transition: 0.3s; }
+    .add-addr-btn:active { transform: scale(0.95); }
+
+    /* PAYMENT OPTIONS */
+    .payment-option { background: var(--card-bg); border-radius: 20px; padding: 18px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); cursor: pointer; border: 2px solid transparent; transition: 0.3s; }
+    .payment-option.active { border-color: var(--accent-color); background: #FFF9F5; }
+    .payment-icon { font-size: 30px; }
+    .payment-text { flex: 1; }
+    .payment-text h4 { font-size: 16px; color: var(--primary-dark); margin-bottom: 4px; font-weight: 900; }
+    .payment-text p { font-size: 12px; color: var(--text-muted); font-weight: bold; }
+    
+    .radio-circle { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #ccc; display: flex; justify-content: center; align-items: center; margin-top: 2px; transition: 0.2s; }
+    .payment-option.active .radio-circle { border-color: var(--accent-color); }
+    .address-option.active .radio-circle { border-color: #4CAF50; }
+    .radio-inner { width: 12px; height: 12px; border-radius: 50%; opacity: 0; transition: 0.2s; }
+    .payment-option.active .radio-inner { background: var(--accent-color); opacity: 1; }
+    .address-option.active .radio-inner { background: #4CAF50; opacity: 1; }
+
+    /* UPI QR SECTION */
+    .upi-section { background: white; border-radius: 20px; padding: 25px 20px; margin-bottom: 20px; text-align: center; display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 2px dashed var(--accent-light); animation: fadeIn 0.4s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    .qr-box { background: #FCF9F2; padding: 15px; border-radius: 15px; display: inline-block; margin-bottom: 15px; box-shadow: inset 0 2px 8px rgba(0,0,0,0.05); }
+    .qr-code { width: 160px; height: 160px; border-radius: 10px; }
+    .upi-id-text { font-size: 16px; font-weight: 900; color: var(--primary-dark); margin-bottom: 5px; }
+    .copy-btn { background: #FFF5F0; color: var(--accent-color); border: 1px solid rgba(231, 111, 81, 0.2); padding: 8px 16px; border-radius: 12px; font-size: 13px; font-weight: bold; cursor: pointer; margin-bottom: 20px; transition: 0.2s; }
+    .copy-btn:active { transform: scale(0.95); }
+    
+    .utr-input { width: 100%; padding: 16px; border: 2px solid rgba(0,0,0,0.08); border-radius: 15px; font-size: 16px; outline: none; background: #FAFAFA; transition: 0.3s; text-align: center; font-weight: 900; color: var(--primary-dark); letter-spacing: 1px; }
+    .utr-input:focus { border-color: var(--accent-color); background: white; }
+
+    /* CHECKOUT BUTTON */
+    .place-order-btn { width: 100%; background: var(--accent-color); color: white; border: none; padding: 18px; border-radius: 18px; font-size: 18px; font-weight: 900; cursor: pointer; box-shadow: 0 5px 15px rgba(231, 111, 81, 0.3); transition: 0.3s; margin-top: 10px; letter-spacing: 0.5px; }
+    .place-order-btn:active { transform: scale(0.96); }
+    .place-order-btn:disabled { background: #d9dada; cursor: not-allowed; box-shadow: none; }
+
+    /* PROCESSING OVERLAY */
+    .processing-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(44, 54, 63, 0.95); z-index: 2000; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; backdrop-filter: blur(5px); }
+    .spinner-icon { font-size: 70px; margin-bottom: 20px; animation: spin 1.5s linear infinite; display: inline-block; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .processing-title { font-size: 26px; font-weight: 900; color: var(--accent-light); margin-bottom: 10px; letter-spacing: 1px; }
+    .processing-desc { font-size: 15px; opacity: 0.9; font-weight: bold; }
+
+    /* SUCCESS OVERLAY */
+    .success-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: #4CAF50; z-index: 2001; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; }
+    .success-icon { font-size: 90px; margin-bottom: 20px; animation: popIn 0.5s cubic-bezier(0.25, 1.5, 0.5, 1) forwards; transform: scale(0); }
+    @keyframes popIn { to { transform: scale(1); } }
+    .success-title { font-size: 32px; font-weight: 900; margin-bottom: 10px; }
+    .success-desc { font-size: 16px; opacity: 0.9; font-weight: bold; }
+
+    /* ALERTS */
+    .top-alert { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: #FF0000; color: white; padding: 15px 20px; border-radius: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.3); display: flex; justify-content: space-between; align-items: center; z-index: 10000; transition: top 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+    .top-alert.show { top: 20px; }
+    .top-alert-msg { font-size: 14px; font-weight: bold; flex: 1; text-align: center; }
+</style>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="firebase-config.js"></script>
+</head>
+<body>
+
+<div class="top-alert" id="topAlert"><div class="top-alert-msg" id="topAlertMsg">Error</div></div>
+
+<div class="topbar">
+    <div class="back-arrow" onclick="goBackToCart()">←</div>
+    <div class="top-title">Checkout</div>
+</div>
+
+<div class="main-payment">
+    <div class="amount-card">
+        <div class="amount-label">Amount to Pay</div>
+        <div class="amount-value">₹<span id="displayTotal">0</span></div>
+    </div>
+
+    <div class="section-title">Select Delivery Address</div>
+    <div id="addressContainer">
+        <p style="text-align: center; font-size: 14px; color: var(--text-muted); font-weight: bold; padding: 20px 0;">Loading addresses...</p>
+    </div>
+
+    <div class="section-title">Select Payment Mode</div>
+
+    <div class="payment-option active" id="optCOD" onclick="selectPaymentMode('COD')">
+        <div class="payment-icon">💵</div>
+        <div class="payment-text">
+            <h4>Cash on Delivery</h4>
+            <p>Pay with cash when order arrives</p>
+        </div>
+        <div class="radio-circle"><div class="radio-inner"></div></div>
+    </div>
+
+    <div class="payment-option" id="optUPI" onclick="selectPaymentMode('UPI')">
+        <div class="payment-icon">📱</div>
+        <div class="payment-text">
+            <h4>Pay via UPI (GPay/PhonePe)</h4>
+            <p>Scan QR & enter exactly 12-digit UTR</p>
+        </div>
+        <div class="radio-circle"><div class="radio-inner"></div></div>
+    </div>
+
+    <div class="upi-section" id="upiDetailsBlock">
+        <div class="qr-box">
+            <img src="https://iili.io/CJn6RMF.jpg/v1/create-qr-code/?size=160x160&data=upi://pay?pa=pepperdreamy@upi&pn=Dreamy%20Delight" class="qr-code" alt="Scan to Pay">
+        </div>
+        <div class="upi-id-text">dhiaj77799@ybl</div>
+        <button class="copy-btn" onclick="copyUPI()">Copy UPI ID</button>
+        <p style="font-size: 12px; color: #FF0000; font-weight: 900; margin-bottom: 12px; line-height: 1.4;">
+            Please transfer the exact amount and enter the 12-digit UTR No. below:
+        </p>
+        <input type="text" id="utrInput" class="utr-input" placeholder="e.g. 312345678901 (12-Digit)" maxlength="12" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+    </div>
+
+    <button class="place-order-btn" id="placeOrderBtn" onclick="processOrderRealtime()">Confirm & Place Order</button>
+</div>
+
+<div class="processing-overlay" id="processingScreen">
+    <div class="spinner-icon">⏳</div>
+    <div class="processing-title">Processing...</div>
+    <div class="processing-desc">Please wait, securely confirming your order.</div>
+</div>
+
+<div class="success-overlay" id="successScreen">
+    <div class="success-icon">✅</div>
+    <div class="success-title">Order Placed!</div>
+    <div class="success-desc">Hold tight, your dreamy food is being prepared.</div>
+</div>
+
+<script>
+const db = firebase.database();
+let loggedInEmail = localStorage.getItem("loggedInEmail");
+let userDbKey = loggedInEmail ? loggedInEmail.replace(/\./g, ',') : "";
+let selectedMode = "COD";
+let grandTotal = 0;
+let cartData = [];
+let billData = {};
+
+let userAddresses = {};
+let chosenAddressData = null;
+
+document.addEventListener("DOMContentLoaded", () => {
+    cartData = JSON.parse(localStorage.getItem('myCart')) || [];
+    const billStr = localStorage.getItem('latestOrderBillSummary');
+    
+    if(!loggedInEmail || cartData.length === 0 || !billStr) {
+        window.location.replace("cart.html");
+        return;
+    }
+
+    billData = JSON.parse(billStr);
+    grandTotal = billData.grandTotal;
+    document.getElementById("displayTotal").innerText = grandTotal;
+
+    fetchUserAddresses();
+});
+
+// BULLETPROOF BACK LOGIC
+history.replaceState({ page: 'payment_base' }, null, location.href);
+history.pushState({ page: 'payment_trap' }, null, location.href);
+
+window.addEventListener('popstate', function(event) {
+    if(document.getElementById("processingScreen").style.display === "flex" || document.getElementById("successScreen").style.display === "flex") {
+        history.pushState(null, null, location.href); 
+    } else {
+        window.location.replace('cart.html');
+    }
+});
+function goBackToCart() { window.location.replace('cart.html'); }
+
+/* =======================================
+   ADDRESS FETCHING & RENDERING LOGIC
+   ======================================= */
+function fetchUserAddresses() {
+    db.ref('users/' + userDbKey + '/addresses').once('value').then((snapshot) => {
+        const container = document.getElementById("addressContainer");
+        if(snapshot.exists()) {
+            userAddresses = snapshot.val();
+            container.innerHTML = "";
+            let isFirst = true;
+
+            Object.keys(userAddresses).forEach(key => {
+                const addr = userAddresses[key];
+                const fullStr = `${addr.house}, ${addr.street}, ${addr.cityPin}`;
+                
+                let activeClass = isFirst ? "active" : "";
+                if(isFirst) chosenAddressData = addr;
+
+                container.innerHTML += `
+                    <div class="address-option ${activeClass}" id="addr_${key}" onclick="selectAddress('${key}')">
+                        <div class="radio-circle"><div class="radio-inner"></div></div>
+                        <div class="addr-details">
+                            <span class="addr-tag">${addr.tag}</span>
+                            <p class="addr-text">${fullStr}</p>
+                            <p style="font-size:12px; color:var(--text-muted); margin-top:5px; font-weight:bold;">📞 ${addr.phone}</p>
+                        </div>
+                    </div>
+                `;
+                isFirst = false;
+            });
+        } else {
+            container.innerHTML = `
+                <div class="no-address-box">
+                    <p style="font-size:15px; color:#FF0000; font-weight:900;">No saved address found!</p>
+                    <p style="font-size:13px; color:var(--text-muted); margin-top:6px; font-weight:bold;">Please add a delivery location to proceed.</p>
+                    <button class="add-addr-btn" onclick="window.location.replace('addresses.html')">+ Add Address Now</button>
+                </div>
+            `;
+        }
+    });
+}
+
+function selectAddress(addressKey) {
+    document.querySelectorAll('.address-option').forEach(el => el.classList.remove('active'));
+    document.getElementById('addr_' + addressKey).classList.add('active');
+    chosenAddressData = userAddresses[addressKey];
+}
+
+/* =======================================
+   PAYMENT UI LOGIC
+   ======================================= */
+function selectPaymentMode(mode) {
+    selectedMode = mode;
+    document.getElementById("optCOD").classList.remove("active");
+    document.getElementById("optUPI").classList.remove("active");
+    
+    if(mode === 'COD') {
+        document.getElementById("optCOD").classList.add("active");
+        document.getElementById("upiDetailsBlock").style.display = "none";
+        document.getElementById("placeOrderBtn").innerText = "Confirm Cash Order";
+    } else {
+        document.getElementById("optUPI").classList.add("active");
+        document.getElementById("upiDetailsBlock").style.display = "block";
+        document.getElementById("placeOrderBtn").innerText = "Verify UTR & Order";
+    }
+}
+
+function copyUPI() {
+    navigator.clipboard.writeText("pepperdreamy@upi");
+    const btn = document.querySelector(".copy-btn");
+    btn.innerText = "Copied! ✔";
+    setTimeout(() => { btn.innerText = "Copy UPI ID"; }, 2000);
+}
+
+/* =======================================
+   ORDER PROCESSING ENGINE (STRICT UTR)
+   ======================================= */
+function processOrderRealtime() {
+    if (!navigator.onLine) {
+        showTopAlert("Please turn on your internet connection to place the order.");
+        return;
+    }
+
+    if (!chosenAddressData) {
+        showTopAlert("Please select or add a delivery address first!");
+        return;
+    }
+
+    const btn = document.getElementById("placeOrderBtn");
+    let utrValue = "";
+
+    if(selectedMode === "UPI") {
+        utrValue = document.getElementById("utrInput").value.trim();
+        // STRICT 12-DIGIT NUMERIC CHECK
+        const isExact12Digits = /^\d{12}$/.test(utrValue);
+        
+        if(!isExact12Digits) {
+            showTopAlert("Please enter exactly a 12-digit numeric UTR Number!");
+            return;
+        }
+    }
+
+    btn.innerText = "Processing...";
+    btn.disabled = true;
+
+    const orderId = "PD-" + Math.floor(100000 + Math.random() * 900000);
+    const today = new Date();
+    const dateStr = today.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+    const newOrder = {
+        orderId: orderId,
+        timestamp: dateStr,
+        status: "preparing",
+        paymentMode: selectedMode === "COD" ? "Cash on Delivery" : "UPI (UTR: " + utrValue + ")",
+        billBreakup: billData,
+        items: cartData,
+        deliveryAddress: chosenAddressData
+    };
+
+    document.getElementById("processingScreen").style.display = "flex";
+
+    db.ref('users/' + userDbKey + '/orders/' + orderId).set(newOrder).catch((err) => {
+        console.error("Firebase sync error:", err);
+    });
+
+    let localHistory = JSON.parse(localStorage.getItem("myOrdersHistory")) || [];
+    localHistory.unshift(newOrder);
+    localStorage.setItem("myOrdersHistory", JSON.stringify(localHistory));
+    
+    localStorage.removeItem("myCart");
+    localStorage.removeItem("latestOrderBillSummary");
+
+    setTimeout(() => {
+        document.getElementById("processingScreen").style.display = "none";
+        document.getElementById("successScreen").style.display = "flex";
+        setTimeout(() => { window.location.replace("order.html"); }, 2000);
+    }, 5000);
+}
+
+function showTopAlert(msg) {
+    const box = document.getElementById("topAlert");
+    document.getElementById("topAlertMsg").innerText = msg;
+    box.classList.add("show");
+    setTimeout(() => box.classList.remove("show"), 3500);
+}
+</script>
+</body>
+</html>

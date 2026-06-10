@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Dreamy Delight - Edit Profile</title>
+<style>
+    /* SOFT & PREMIUM COLOR PALETTE (MATCHED WITH ORDER.HTML) */
+    :root {
+        --bg-color: #FCF9F2; 
+        --primary-dark: #2C363F; 
+        --accent-color: #E76F51; 
+        --accent-light: #F4A261; 
+        --text-muted: #888888;
+        --card-bg: #FFFFFF;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+    body { background: var(--bg-color); padding-bottom: 40px; overflow-x: hidden; color: var(--primary-dark); }
+    ::-webkit-scrollbar { display: none; }
+    
+    /* HEADER - LIGHT YELLOW THEME */
+    .topbar { height: 65px; background: #FFE66D; color: var(--primary-dark); display: flex; align-items: center; padding: 0 15px; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; }
+    .back-arrow { font-size: 26px; cursor: pointer; margin-right: 15px; font-weight: bold; color: var(--primary-dark); }
+    .top-title { font-size: 22px; font-weight: 900; white-space: nowrap; color: #FF0000; font-family: "Trebuchet MS", sans-serif; letter-spacing: 0.5px; }
+
+    /* PROFILE HEADER (AVATAR) */
+    .profile-header { display: flex; flex-direction: column; align-items: center; padding: 30px 20px 20px; background: linear-gradient(180deg, #FFE66D 0%, var(--bg-color) 100%); }
+    .avatar-wrapper { position: relative; margin-bottom: 15px; }
+    .avatar { width: 100px; height: 100px; background: var(--accent-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 45px; color: white; border: 4px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+    .user-greeting { font-size: 22px; font-weight: 900; color: var(--primary-dark); margin-bottom: 5px; }
+    .user-email-display { font-size: 14px; color: var(--text-muted); font-weight: bold; }
+
+    /* FORM CONTAINER */
+    .form-container { padding: 15px; max-width: 500px; margin: 0 auto; }
+    
+    @keyframes slideUp { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
+    .form-card { background: var(--card-bg); border-radius: 20px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); margin-bottom: 20px; border: 1px solid rgba(0,0,0,0.02); animation: slideUp 0.4s ease forwards; }
+    
+    .section-title { font-size: 15px; font-weight: bold; color: var(--primary-dark); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px dashed rgba(0, 0, 0, 0.1); padding-bottom: 8px; }
+    
+    .input-group { margin-bottom: 18px; }
+    .input-group label { display: block; font-size: 12px; color: var(--text-muted); font-weight: bold; margin-bottom: 6px; margin-left: 4px; }
+    .input-field { width: 100%; padding: 14px; border: 1.5px solid #e0d5c1; border-radius: 12px; font-size: 15px; outline: none; background: #fcfbf9; color: var(--primary-dark); transition: border-color 0.3s; }
+    .input-field:focus { border-color: var(--accent-light); background: white; }
+    .input-field:disabled { background: #eee; color: #888; cursor: not-allowed; border-color: #ddd; }
+
+    /* SAVE BUTTON */
+    .save-btn { width: 100%; background: var(--accent-color); color: white; border: none; padding: 16px; border-radius: 15px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 5px 15px rgba(231, 111, 81, 0.3); transition: 0.3s; margin-top: 10px; }
+    .save-btn:active { transform: scale(0.98); }
+    .save-btn:disabled { background: #d9dada; cursor: not-allowed; box-shadow: none; }
+
+    /* ALERTS */
+    .top-alert { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: #4CAF50; color: white; padding: 15px 20px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); display: flex; justify-content: space-between; align-items: center; z-index: 10000; transition: top 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+    .top-alert.show { top: 20px; }
+    .top-alert-msg { font-size: 15px; font-weight: bold; flex: 1; text-align: center; }
+</style>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="firebase-config.js"></script>
+</head>
+<body>
+
+<div class="top-alert" id="topAlert">
+    <div class="top-alert-msg" id="topAlertMsg">Profile Updated!</div>
+</div>
+
+<div class="topbar">
+    <div class="back-arrow" onclick="goBack()">←</div>
+    <div class="top-title">Edit Profile</div>
+</div>
+
+<div class="profile-header">
+    <div class="avatar-wrapper">
+        <div class="avatar">😃</div>
+    </div>
+    <div class="user-greeting" id="displayGreeting">User</div>
+    <div class="user-email-display" id="displayEmail">user@example.com</div>
+</div>
+
+<div class="form-container">
+    
+    <div class="form-card">
+        <div class="section-title">Personal Details</div>
+        
+        <div class="input-group">
+            <label>Registered Email (Cannot be changed)</label>
+            <input type="email" id="emailInput" class="input-field" disabled>
+        </div>
+        
+        <div class="input-group">
+            <label>Full Name</label>
+            <input type="text" id="nameInput" class="input-field" placeholder="Enter your full name">
+        </div>
+
+        <div class="input-group">
+            <label>Mobile Number</label>
+            <input type="tel" id="mobileInput" class="input-field" placeholder="10-digit mobile number" maxlength="10">
+        </div>
+    </div>
+
+    <div class="form-card">
+        <div class="section-title">Security & Password</div>
+        <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 15px; line-height: 1.4; font-weight: bold;">
+            To change your password, enter your <b>Current Password</b> first. (Leave blank if you only want to change details above).
+        </p>
+
+        <div class="input-group">
+            <label>Current Password (Required ONLY to set new password)</label>
+            <input type="password" id="currentPassInput" class="input-field" placeholder="Enter current password to verify">
+        </div>
+
+        <div class="input-group">
+            <label>New Password</label>
+            <input type="password" id="newPassInput" class="input-field" placeholder="Enter new password">
+        </div>
+    </div>
+
+    <button class="save-btn" id="saveProfileBtn" onclick="saveProfileData()">Save Changes</button>
+
+</div>
+
+<script>
+const db = firebase.database();
+let loggedInEmail = "";
+let dbKey = "";
+let fetchedUserData = null;
+
+document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
+
+document.addEventListener("DOMContentLoaded", () => {
+    loggedInEmail = localStorage.getItem("loggedInEmail");
+    const loggedInName = localStorage.getItem("loggedInName");
+    
+    if(!loggedInEmail) {
+        window.location.replace("index.html");
+        return;
+    }
+
+    dbKey = loggedInEmail.replace(/\./g, ',');
+    document.getElementById("emailInput").value = loggedInEmail;
+    document.getElementById("displayEmail").innerText = loggedInEmail;
+    document.getElementById("nameInput").value = loggedInName || "";
+    document.getElementById("displayGreeting").innerText = loggedInName ? loggedInName : "User";
+
+    db.ref('users/' + dbKey).once('value').then((snapshot) => {
+        if(snapshot.exists()) {
+            fetchedUserData = snapshot.val();
+            if(fetchedUserData.mobile) {
+                document.getElementById("mobileInput").value = fetchedUserData.mobile;
+            }
+        }
+    });
+});
+
+function goBack() {
+    if(window.history.length > 1) {
+        window.history.back();
+    } else {
+        window.location.replace("index.html");
+    }
+}
+
+function saveProfileData() {
+    const nameVal = document.getElementById("nameInput").value.trim();
+    const mobileVal = document.getElementById("mobileInput").value.trim();
+    const currentPassVal = document.getElementById("currentPassInput").value;
+    const newPassVal = document.getElementById("newPassInput").value;
+    const saveBtn = document.getElementById("saveProfileBtn");
+
+    // 1. Basic Validations
+    if(!nameVal) { showTopAlert("Name cannot be empty!", "error"); return; }
+    
+    // 2. Conditional Password Change Verification
+    if(newPassVal) {
+        if(!currentPassVal) { 
+            showTopAlert("Please enter Current Password to update your password!", "error"); 
+            return; 
+        }
+        if(newPassVal.length < 8) { 
+            showTopAlert("New password must be at least 8 characters!", "error"); 
+            return; 
+        }
+        
+        const encryptedInputPass = btoa(currentPassVal + "_dreamySec");
+        if(!fetchedUserData || (fetchedUserData.password !== encryptedInputPass && fetchedUserData.password !== currentPassVal)) {
+            showTopAlert("Incorrect Current Password!", "error");
+            return;
+        }
+    }
+
+    // 3. Prepare Updates Object
+    saveBtn.innerText = "Saving...";
+    saveBtn.disabled = true;
+
+    let updates = {
+        name: nameVal,
+        mobile: mobileVal
+    };
+
+    if(newPassVal) {
+        updates.password = btoa(newPassVal + "_dreamySec");
+    }
+
+    // 4. Push Updates to Firebase
+    db.ref('users/' + dbKey).update(updates).then(() => {
+        localStorage.setItem("loggedInName", nameVal);
+        document.getElementById("displayGreeting").innerText = nameVal;
+        
+        if(newPassVal && fetchedUserData) fetchedUserData.password = updates.password;
+        
+        document.getElementById("currentPassInput").value = "";
+        document.getElementById("newPassInput").value = "";
+        
+        showTopAlert("Profile Updated Successfully! 🎉", "success");
+        saveBtn.innerText = "Save Changes";
+        saveBtn.disabled = false;
+        
+    }).catch((err) => {
+        showTopAlert("Error: " + err.message, "error");
+        saveBtn.innerText = "Save Changes";
+        saveBtn.disabled = false;
+    });
+}
+
+function showTopAlert(msg, type) {
+    const alertBox = document.getElementById("topAlert");
+    document.getElementById("topAlertMsg").innerText = msg;
+    alertBox.style.background = type === 'error' ? "#e53300" : "#4CAF50";
+    alertBox.classList.add("show");
+    setTimeout(() => { alertBox.classList.remove("show"); }, 3000);
+}
+</script>
+</body>
+</html>
