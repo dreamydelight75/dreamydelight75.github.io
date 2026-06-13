@@ -294,8 +294,6 @@ body {
 </head>
 <body>
 
-<div class="top-alert" id="topAlert" style="display:none;"></div>
-
 <div class="topbar">
     <div class="back-arrow" onclick="window.location.replace('index.html')">←</div>
     <div class="top-title">Recent Orders</div>
@@ -439,7 +437,7 @@ function checkAppLoginState() {
         updateUIForLoggedInUser(savedEmail, savedName);
         logoutNotice.style.display = "none";
         ordersContainer.style.display = "block";
-        renderOrdersHistoryUI(savedEmail); 
+        renderOrdersHistoryUI(); 
     } else {
         updateUIForLoggedOutUser();
         logoutNotice.style.display = "block";
@@ -449,94 +447,94 @@ function checkAppLoginState() {
 }
 
 /* =======================================
-   FIXED: REALTIME FIREBASE SYNC ENGINE
+   ROBUST DYNAMIC HISTORY DESERIALIZER ENGINE
    ====================================== */
-function renderOrdersHistoryUI(email) {
+function renderOrdersHistoryUI() {
     const container = document.getElementById("ordersContainer");
-    const dbKey = email.replace(/\./g, ',');
+    let historyData = localStorage.getItem("myOrdersHistory");
     
-    // फ़ायरबेस से लाइव डेटा सुनने के लिए .on('value') सेट किया
-    db.ref('orders/' + dbKey).on('value', (snapshot) => {
-        if (!snapshot.exists()) {
-            container.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-muted); font-weight:bold;">No recent orders found.</div>`;
-            return;
+    if(!historyData) {
+        // Fallback Mock Data for UI presentation if empty
+        const initialMockHistory = [
+            {
+                orderId: "PD-983415",
+                timestamp: "Today, 08:30 PM",
+                status: "preparing",
+                paymentMode: "UPI Apps (Google Pay)",
+                billBreakup: { subTotal: 339, tax: 17, delivery: 40, grandTotal: 396 },
+                items: [
+                    { name: "🌶 Korean Kimchi Paneer Burger", qty: 1, price: 219 },
+                    { name: "🍨 Premium Chocolate Ice Cream", qty: 1, price: 120 }
+                ]
+            },
+            {
+                orderId: "PD-741290",
+                timestamp: "16 May 2026, 01:15 PM",
+                status: "delivered",
+                paymentMode: "Cash on Delivery (COD)",
+                billBreakup: { subTotal: 150, tax: 8, delivery: 40, grandTotal: 198 },
+                items: [
+                    { name: "🥢 Veg Hakka Noodles (Chaumin)", qty: 2, price: 75 }
+                ]
+            }
+        ];
+        localStorage.setItem("myOrdersHistory", JSON.stringify(initialMockHistory));
+        historyData = localStorage.getItem("myOrdersHistory");
+    }
+
+    const ordersArray = JSON.parse(historyData);
+    let htmlContent = "";
+
+    ordersArray.forEach((order) => {
+        // Build items HTML Row by Row (Vertical Layout with Price)
+        let itemsHtml = "";
+        if(order.items && Array.isArray(order.items)){
+            order.items.forEach(item => {
+                let itemTotal = item.price * item.qty;
+                itemsHtml += `
+                    <div class="item-detail-row">
+                        <div class="item-name-qty">
+                            <span style="color:var(--text-muted); margin-right:4px;">▪</span>
+                            ${item.name} <span class="item-qty-badge">x${item.qty}</span>
+                        </div>
+                        <div class="item-price">₹${itemTotal}</div>
+                    </div>
+                `;
+            });
         }
 
-        const ordersData = snapshot.val();
-        let htmlContent = "";
+        const badgeClass = order.status === 'delivered' ? 'status-delivered' : 'status-preparing';
 
-        // फ़ायरबेस ऑब्जेक्ट डेटा को लूप करने के लिए ऑब्जेक्ट कीज़ निकालीं
-        // ताकि नया ऑर्डर हमेशा लिस्ट में सबसे ऊपर (Reverse) दिखाई दे
-        const orderIds = Object.keys(ordersData).reverse();
-
-        orderIds.forEach((orderId) => {
-            const order = ordersData[orderId];
-            
-            // आर्डर आईडी अगर डेटा के अंदर नहीं है तो ऑब्जेक्ट की (key) को ही आईडी मानेंगे
-            const displayOrderId = order.orderId || orderId;
-            
-            let itemsHtml = "";
-            if (order.items) {
-                // अगर आइटम्स ऑब्जेक्ट फ़ॉर्मेट में हैं तो उसे ऐरे में बदलेंगे
-                const itemsArray = Array.isArray(order.items) ? order.items : Object.values(order.items);
-                
-                itemsArray.forEach(item => {
-                    let itemTotal = (item.price || 0) * (item.qty || 1);
-                    itemsHtml += `
-                        <div class="item-detail-row">
-                            <div class="item-name-qty">
-                                <span style="color:var(--text-muted); margin-right:4px;">▪</span>
-                                ${item.name} <span class="item-qty-badge">x${item.qty || 1}</span>
-                            </div>
-                            <div class="item-price">₹${itemTotal}</div>
-                        </div>
-                    `;
-                });
-            }
-
-            // स्टेटस का स्टाइल तय करने का लॉजिक
-            let badgeClass = 'status-preparing';
-            if (order.status && order.status.toLowerCase() === 'delivered') {
-                badgeClass = 'status-delivered';
-            }
-
-            // बिल ब्रेकअप का सेफ़ हैंडलिंग (अगर सर्वर से कोई वैल्यू मिसिंग हो तो क्रैश न हो)
-            const subTotal = order.billBreakup ? (order.billBreakup.subTotal || 0) : 0;
-            const tax = order.billBreakup ? (order.billBreakup.tax || 0) : 0;
-            const delivery = order.billBreakup ? (order.billBreakup.delivery || 0) : 0;
-            const grandTotal = order.billBreakup ? (order.billBreakup.grandTotal || 0) : 0;
-
-            htmlContent += `
-                <div class="order-card">
-                    <div class="order-header">
-                        <span class="order-id">ID: #${displayOrderId}</span>
-                        <span class="order-date">${order.timestamp || 'Just now'}</span>
-                    </div>
-                    
-                    <div class="order-items-list">
-                        ${itemsHtml}
-                    </div>
-
-                    <div class="order-bill-breakdown">
-                        <div class="breakdown-row"><span>Item Total</span><span>₹${subTotal}/-</span></div>
-                        <div class="breakdown-row"><span>Taxes & Charges</span><span>₹${tax}/-</span></div>
-                        <div class="breakdown-row"><span>Delivery Charges</span><span>₹${delivery}/-</span></div>
-                    </div>
-
-                    <div class="order-footer">
-                        <div class="grand-total-box">
-                            <h4>Grand Total</h4>
-                            <p>₹${grandTotal}/-</p>
-                            <div class="payment-mode-tag">💳 ${order.paymentMode || 'Paid'}</div>
-                        </div>
-                        <span class="status-badge ${badgeClass}">${order.status || 'Processing'}</span>
-                    </div>
+        htmlContent += `
+            <div class="order-card">
+                <div class="order-header">
+                    <span class="order-id">ID: #${order.orderId}</span>
+                    <span class="order-date">${order.timestamp}</span>
                 </div>
-            `;
-        });
+                
+                <div class="order-items-list">
+                    ${itemsHtml}
+                </div>
 
-        container.innerHTML = htmlContent;
+                <div class="order-bill-breakdown">
+                    <div class="breakdown-row"><span>Item Total</span><span>₹${order.billBreakup.subTotal}/-</span></div>
+                    <div class="breakdown-row"><span>Taxes & Charges (5%)</span><span>₹${order.billBreakup.tax}/-</span></div>
+                    <div class="breakdown-row"><span>Delivery Charges</span><span>₹${order.billBreakup.delivery}/-</span></div>
+                </div>
+
+                <div class="order-footer">
+                    <div class="grand-total-box">
+                        <h4>Grand Total</h4>
+                        <p>₹${order.billBreakup.grandTotal}/-</p>
+                        <div class="payment-mode-tag">💳 ${order.paymentMode}</div>
+                    </div>
+                    <span class="status-badge ${badgeClass}">${order.status}</span>
+                </div>
+            </div>
+        `;
     });
+
+    container.innerHTML = htmlContent;
 }
 
 function updateCartBadge() {
