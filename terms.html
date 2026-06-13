@@ -35,6 +35,30 @@
             overflow-x: hidden;
         }
 
+        /* ⬅ BACK BUTTON STYLE */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--text-main);
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);
+            transform: translateX(-5px); /* Halka sa piche slide hoga */
+        }
+
         /* Container with subtle Entrance Animation */
         .container {
             max-width: 1000px;
@@ -229,13 +253,17 @@
 <body>
 
 <div class="container">
+    
+    <a href="index.html" class="back-btn">
+        <span>←</span> Back to Home
+    </a>
+
     <header>
         <h1>Dreamy Delight</h1>
         <p>Legal Terms, Policies & Conditions</p>
         <p style="margin-top: 10px; font-size: 0.85rem; color: var(--primary-accent);">Last Updated: June 2026</p>
     </header>
 
-    <!-- Interactive Navigation -->
     <div class="nav-tabs">
         <a href="#terms" class="nav-link">Terms of Service</a>
         <a href="#privacy" class="nav-link">Privacy Policy</a>
@@ -243,7 +271,6 @@
         <a href="#copyright" class="nav-link">Copyright Notice</a>
     </div>
 
-    <!-- 1. Terms of Service -->
     <section id="terms">
         <h2>Terms of Service / Use</h2>
         <p>Welcome to <strong>Dreamy Delight</strong> (<a href="https://dreamydelight75.github.io/" target="_blank" style="color: #00f0ff; text-decoration: none;">dreamydelight75.github.io</a>). By using our website, you fully accept and agree to follow these legal terms and conditions.</p>
@@ -259,7 +286,6 @@
         </ul>
     </section>
 
-    <!-- 2. Privacy Policy -->
     <section id="privacy">
         <h2>Privacy Policy</h2>
         <p>Your privacy is highly valuable to us. This section transparently highlights how Dreamy Delight collects, handles, and shields your private data.</p>
@@ -275,7 +301,6 @@
         <p>We stand strictly against selling, trading, or sharing your private information with third-party networks.</p>
     </section>
 
-    <!-- 3. Refund Policy -->
     <section id="refund">
         <h2>Refund Policy</h2>
         <p>Thank you for choosing Dreamy Delight. We aim for absolute client satisfaction. Please carefully go through our cancellation and refund guidelines:</p>
@@ -288,14 +313,12 @@
         </ul>
     </section>
 
-    <!-- 4. Copyright Rules -->
     <section id="copyright">
         <h2>Copyright Notice</h2>
         <p>All creative assets, code snippets, custom graphics, texts, and layout designs present on this website belong entirely to <strong>Dreamy Delight</strong>.</p>
         <p>Strict legal actions will be enforced against any unauthorized commercial replication, distribution, or cloning of our assets.</p>
     </section>
 
-    <!-- Animated Contact Card -->
     <div class="contact-box">
         <h3 style="margin-top: 0; color: #ffffff; font-size: 1.5rem; margin-bottom: 15px;">⚡ Get In Touch</h3>
         <p>Have doubts, queries, or legal concerns? Our team is always ready to assist you. Contact us directly via:</p>
