@@ -1,12 +1,315 @@
-<!doctype html>
-<html>
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" id="viewport" content="width=device-width, initial-scale=1">
-    </head>
-    <body>
-      <div>
-        Hello World!
-      </div>
-    </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Policy | Dreamy Delight</title>
+    <style>
+        /* Modern CSS Variables for easy customization */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f0c1b 0%, #201a30 100%);
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --primary-accent: #ff007f; /* Cyber Pink */
+            --secondary-accent: #7000ff; /* Electric Purple */
+            --text-main: #f3f4f6;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 60px 20px;
+            overflow-x: hidden;
+        }
+
+        /* Container with subtle Entrance Animation */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.01);
+            backdrop-filter: blur(10px);
+            padding: 50px;
+            border-radius: 24px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            animation: fadeInContainer 1.2s ease-out;
+        }
+
+        /* Entrance Keyframes */
+        @keyframes fadeInContainer {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        /* Animated Title Gradient */
+        header h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary-accent), #00f0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+        }
+
+        /* Modern Navigation Glass Tabs */
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 50px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 500;
+            padding: 12px 25px;
+            border-radius: 30px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.95rem;
+        }
+
+        /* Hover Pulse Animation on Navigation Links */
+        .nav-link:hover {
+            background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent));
+            border-color: transparent;
+            box-shadow: 0 0 20px rgba(255, 0, 127, 0.4);
+            transform: translateY(-3px);
+        }
+
+        /* Legal Sections Cards */
+        section {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 35px;
+            border-radius: 16px;
+            margin-bottom: 35px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        /* Interactive Hover Effect on Cards */
+        section:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 0, 127, 0.3);
+            box-shadow: 0 10px 30px rgba(112, 0, 255, 0.15);
+        }
+
+        section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Glowing Dot before Headings */
+        section h2::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--primary-accent);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--primary-accent);
+        }
+
+        section h3 {
+            color: #d1d5db;
+            font-size: 1.25rem;
+            margin: 25px 0 12px 0;
+        }
+
+        p, ul {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        ul {
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        /* Highlight text color */
+        strong {
+            color: #ffffff;
+        }
+
+        /* Animated Glowing Contact Box */
+        .contact-box {
+            background: linear-gradient(135deg, rgba(112, 0, 255, 0.1) 0%, rgba(255, 0, 127, 0.1) 100%);
+            border: 1px solid rgba(255, 0, 127, 0.2);
+            padding: 35px;
+            border-radius: 20px;
+            margin-top: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-box::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            transform: rotate(45deg);
+            transition: 0.8s;
+        }
+
+        .contact-box:hover::after {
+            left: 120%;
+        }
+
+        .contact-box a {
+            color: #00f0ff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .contact-box a:hover {
+            color: var(--primary-accent);
+            text-decoration: underline;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid var(--card-border);
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        /* Smooth Responsive design */
+        @media (max-width: 768px) {
+            body { padding: 30px 10px; }
+            .container { padding: 25px; }
+            header h1 { font-size: 2.5rem; }
+            .nav-tabs { flex-direction: column; }
+            .nav-link { text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Dreamy Delight</h1>
+        <p>Legal Terms, Policies & Conditions</p>
+        <p style="margin-top: 10px; font-size: 0.85rem; color: var(--primary-accent);">Last Updated: June 2026</p>
+    </header>
+
+    <!-- Interactive Navigation -->
+    <div class="nav-tabs">
+        <a href="#terms" class="nav-link">Terms of Service</a>
+        <a href="#privacy" class="nav-link">Privacy Policy</a>
+        <a href="#refund" class="nav-link">Refund Policy</a>
+        <a href="#copyright" class="nav-link">Copyright Notice</a>
+    </div>
+
+    <!-- 1. Terms of Service -->
+    <section id="terms">
+        <h2>Terms of Service / Use</h2>
+        <p>Welcome to <strong>Dreamy Delight</strong> (<a href="https://dreamydelight75.github.io/" target="_blank" style="color: #00f0ff; text-decoration: none;">dreamydelight75.github.io</a>). By using our website, you fully accept and agree to follow these legal terms and conditions.</p>
+        
+        <h3>User Agreement</h3>
+        <p>The content provided across this platform is for general informational use. We reserve the full right to update or alter these terms without prior notice. Any unauthorized use of this website may lead to legal actions.</p>
+        
+        <h3>Core Responsibilities</h3>
+        <ul>
+            <li>Users must provide accurate and genuine information when contacting or purchasing from us.</li>
+            <li>You are strictly prohibited from using our services for any illegal or malicious acts.</li>
+            <li>We hold the absolute authority to suspend access or terminate services at any given moment.</li>
+        </ul>
+    </section>
+
+    <!-- 2. Privacy Policy -->
+    <section id="privacy">
+        <h2>Privacy Policy</h2>
+        <p>Your privacy is highly valuable to us. This section transparently highlights how Dreamy Delight collects, handles, and shields your private data.</p>
+        
+        <h3>Data Collection</h3>
+        <p>We may securely collect personal details when you interact with our platform, submit online forms, or directly email/call our team.</p>
+        
+        <h3>How We Use Your Data</h3>
+        <ul>
+            <li>To enhance and personalize your user experience on our platform.</li>
+            <li>To smoothly process payments, resolve issues, or provide prompt client support.</li>
+        </ul>
+        <p>We stand strictly against selling, trading, or sharing your private information with third-party networks.</p>
+    </section>
+
+    <!-- 3. Refund Policy -->
+    <section id="refund">
+        <h2>Refund Policy</h2>
+        <p>Thank you for choosing Dreamy Delight. We aim for absolute client satisfaction. Please carefully go through our cancellation and refund guidelines:</p>
+        
+        <h3>Refund Eligibility</h3>
+        <ul>
+            <li><strong>Timeline:</strong> Refund claims must be submitted within 7 business days from the service or package purchase date.</li>
+            <li><strong>Requirements:</strong> You must present authentic proof of purchase along with a valid reason for the refund request.</li>
+            <li><strong>Processing:</strong> Once verified and approved, refunds are credited back to the original source payment method within 5-7 working days.</li>
+        </ul>
+    </section>
+
+    <!-- 4. Copyright Rules -->
+    <section id="copyright">
+        <h2>Copyright Notice</h2>
+        <p>All creative assets, code snippets, custom graphics, texts, and layout designs present on this website belong entirely to <strong>Dreamy Delight</strong>.</p>
+        <p>Strict legal actions will be enforced against any unauthorized commercial replication, distribution, or cloning of our assets.</p>
+    </section>
+
+    <!-- Animated Contact Card -->
+    <div class="contact-box">
+        <h3 style="margin-top: 0; color: #ffffff; font-size: 1.5rem; margin-bottom: 15px;">⚡ Get In Touch</h3>
+        <p>Have doubts, queries, or legal concerns? Our team is always ready to assist you. Contact us directly via:</p>
+        <ul style="list-style: none; padding-left: 0; margin-top: 15px;">
+            <li style="margin-bottom: 12px;"><strong>📩 Email:</strong> <a href="mailto:dreamydelight75@gmail.com">dreamydelight75@gmail.com</a></li>
+            <li style="margin-bottom: 12px;"><strong>📞 Phone:</strong> <a href="tel:+917070205010">+91 70702 05010</a></li>
+            <li><strong>🌐 Web:</strong> <a href="https://dreamydelight75.github.io/" target="_blank">dreamydelight75.github.io</a></li>
+        </ul>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Dreamy Delight. All Rights Reserved.</p>
+    </footer>
+</div>
+
+</body>
 </html>
