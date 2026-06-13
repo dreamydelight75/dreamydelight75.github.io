@@ -263,7 +263,7 @@ const fallbackBanners = [
     "https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=1200"
 ];
 const fallbackCategories = [
-    { id: "chaumin", name: "SANDWICH", img: "https://i.imgur.com/Qa6Y4Qf.png" }
+    { id: "chaumin", name: "SANDWUSH", img: "https://i.imgur.com/Qa6Y4Qf.png" }
 ];
 
 function setSecureCookie(name, value, days) {
@@ -420,7 +420,7 @@ function updateSliderPosition() {
 
     const dots = document.querySelectorAll("#userDotsContainer .dot");
     dots.forEach(dot => dot.classList.remove("active"));
-    if(dots[sliderIndex]) dots[sliderIndex].classList.add("active");
+    if(dots[sliderIndex]) dots[dots[sliderIndex]].classList.add("active");
 }
 
 function nextSlide() { sliderIndex++; updateSliderPosition(); }
@@ -560,16 +560,39 @@ function requestNotificationPermission() {
     }
 }
 
-// FIREBASE LIVE LISTENER FOR ADMIN ORDER STATUS UPDATES
+// FIXED: FIREBASE LIVE LISTENER FOR ADMIN ORDER STATUS UPDATES
+let standardOrdersTracker = {};
+let isFirstFirebaseLoad = true;
+
 function listenToOrderNotifications(email) {
     const dbKey = email.replace(/\./g, ',');
     const orderRef = db.ref('orders/' + dbKey);
     
-    orderRef.on('child_changed', (snapshot) => {
-        const updatedOrder = snapshot.val();
-        if(updatedOrder && updatedOrder.status) {
-            triggerSystemNotification("Order Update!", `Your order status changed to: ${updatedOrder.status}`);
+    // Sabhi orders par loop rakhne ke liye '.on('value')' lagaya hai
+    orderRef.on('value', (snapshot) => {
+        if (!snapshot.exists()) return;
+        
+        const currentOrdersList = snapshot.val();
+        
+        // Pehli baar database load hone par alert nahi aana chahiye
+        if (isFirstFirebaseLoad) {
+            standardOrdersTracker = currentOrdersList;
+            isFirstFirebaseLoad = false;
+            return;
         }
+        
+        // Loop chalakar check karenge ki kaunsa order update hua hai
+        for (let orderId in currentOrdersList) {
+            const oldOrderData = standardOrdersTracker[orderId];
+            const newOrderData = currentOrdersList[orderId];
+            
+            if (newOrderData && oldOrderData && oldOrderData.status !== newOrderData.status) {
+                triggerSystemNotification("Order Update!", `Order #${orderId} status changed to: ${newOrderData.status}`);
+            }
+        }
+        
+        // Local tracker state update karein
+        standardOrdersTracker = currentOrdersList;
     });
 }
 
