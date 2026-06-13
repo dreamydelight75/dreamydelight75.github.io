@@ -6,7 +6,7 @@
 <title>Dreamy Delight - Recent Orders</title>
 
 <style>
-/* SOFT & PREMIUM COLOR PALETTE - THEME UPDATED */
+/* SOFT & PREMIUM COLOR PALETTE */
 :root {
     --bg-color: #FCF9F2; 
     --primary-dark: #2C363F; 
@@ -34,7 +34,7 @@ body {
     display: none;
 }
 
-/* HEADER - LIGHT YELLOW THEME */
+/* HEADER */
 .topbar{ 
     height: 65px; 
     background: #FFE66D; 
@@ -100,7 +100,7 @@ body {
     box-shadow: 0 4px 10px rgba(231, 111, 81, 0.3);
 }
 
-/* 2x SLOW ENTRY ANIMATION */
+/* ENTRY ANIMATION */
 @keyframes fadeInUp {
     0% { opacity: 0; transform: translateY(40px); }
     100% { opacity: 1; transform: translateY(0); }
@@ -114,7 +114,6 @@ body {
     margin-bottom: 20px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.06);
     border: 1px solid rgba(0,0,0,0.02);
-    /* 2x slower movement (0.8s) */
     animation: fadeInUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
@@ -139,7 +138,6 @@ body {
     font-weight: bold;
 }
 
-/* UPDATED ITEMS LIST WORKSPACE (Line by Line Format) */
 .order-items-list {
     margin-bottom: 12px;
     background: #FAFAFA; 
@@ -184,7 +182,6 @@ body {
     font-size: 13px;
 }
 
-/* EXPANDED BILL BREAKDOWN */
 .order-bill-breakdown {
     background: #FFF9F5;
     border-radius: 12px;
@@ -202,7 +199,6 @@ body {
     font-weight: bold;
 }
 
-/* CARD FOOTER LAYER */
 .order-footer {
     display: flex;
     justify-content: space-between;
@@ -261,7 +257,7 @@ body {
 .side-menu-top { display: flex; justify-content: space-between; align-items: center; padding: 25px 20px 10px 20px; }
 .back-btn { font-size: 26px; color: var(--primary-dark); cursor: pointer; background: none; border: none; }
 
-/* --- LOGIN VIEW --- */
+/* LOGIN VIEW */
 .login-container { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 0 30px; }
 .splash-img { width: 180px; height: 180px; background: url('https://cdn-icons-png.flaticon.com/512/3135/3135715.png') no-repeat center center; background-size: contain; margin-bottom: 20px; opacity: 0.9; }
 .login-title { font-size: 28px; color: var(--primary-dark); font-weight: 900; margin-bottom: 30px; letter-spacing: 1px; }
@@ -269,7 +265,7 @@ body {
 .email-input { border: none; background: transparent; outline: none; font-size: 15px; color: var(--primary-dark); width: 100%; font-weight: bold; }
 .proceed-btn { width: 100%; background: #d9dada; color: white; font-size: 18px; font-weight: bold; border: none; padding: 16px; border-radius: 15px; cursor: not-allowed; transition: 0.3s ease; margin-top: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
 
-/* --- PROFILE VIEW --- */
+/* PROFILE VIEW */
 .profile-container { display: none; width: 100%; padding: 0 20px; padding-bottom: 50px; }
 .profile-header-info { display: flex; align-items: center; gap: 15px; margin-bottom: 35px; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.02); }
 .avatar { width: 60px; height: 60px; background: #FFF9F5 url('https://cdn-icons-png.flaticon.com/512/3135/3135715.png') no-repeat center center; background-size: contain; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 2px solid var(--accent-light); }
@@ -290,6 +286,8 @@ body {
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<script src="firebase-config.js"></script>
 
 </head>
 <body>
@@ -382,28 +380,9 @@ body {
 </div>
 
 <script>
-/* =======================================
-   FIREBASE CONFIG
-   ======================================= */
-const firebaseConfig = {
-  apiKey: "AIzaSyDl2hNCmCBhlu25OxC3o4E-Pc_Mf3nwdPI",
-  authDomain: "chandan-projects.firebaseapp.com",
-  databaseURL: "https://chandan-projects-default-rtdb.firebaseio.com",
-  projectId: "chandan-projects",
-  storageBucket: "chandan-projects.firebasestorage.app",
-  messagingSenderId: "306771836296",
-  appId: "1:306771836296:web:ee2dec34dcf56ceddd0e3d",
-  measurementId: "G-2MD1Y8BEWY"
-};
-
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-}
+// Database reference initialization
 const db = firebase.database();
 
-/* =======================================
-   PAGE LOAD ACTIONS
-   ======================================= */
 document.addEventListener("DOMContentLoaded", () => {
     updateCartBadge();
     checkAppLoginState();
@@ -411,7 +390,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
 
-// HISTORY TRAP FOR SMOOTH BACK BEHAVIOR
 history.replaceState({ page: 'orders_base' }, null, location.href);
 history.pushState({ page: 'orders_trap' }, null, location.href);
 
@@ -425,7 +403,9 @@ window.addEventListener('popstate', function(event) {
     }
 });
 
-
+/* =========================================================
+   ⚡ HYBRID SYNC: LOCAL DATABASE FIRST + LIVE FIREBASE
+   ========================================================= */
 function checkAppLoginState() {
     const savedEmail = localStorage.getItem("loggedInEmail");
     const savedName = localStorage.getItem("loggedInName");
@@ -437,7 +417,12 @@ function checkAppLoginState() {
         updateUIForLoggedInUser(savedEmail, savedName);
         logoutNotice.style.display = "none";
         ordersContainer.style.display = "block";
-        renderOrdersHistoryUI(); 
+        
+        // Step 1: Pehle Local Database se super-fast render karo (Zero Lag)
+        renderOrdersFromCache(); 
+
+        // Step 2: Background mein Firebase Realtime Listener trigger karo
+        listenToLiveOrdersFirebase(savedEmail);
     } else {
         updateUIForLoggedOutUser();
         logoutNotice.style.display = "block";
@@ -446,15 +431,14 @@ function checkAppLoginState() {
     }
 }
 
-/* =======================================
-   ROBUST DYNAMIC HISTORY DESERIALIZER ENGINE
-   ====================================== */
-function renderOrdersHistoryUI() {
-    const container = document.getElementById("ordersContainer");
-    let historyData = localStorage.getItem("myOrdersHistory");
-    
-    if(!historyData) {
-        // Fallback Mock Data for UI presentation if empty
+// Local Storage se data read karne wala engine
+function renderOrdersFromCache() {
+    let cachedData = localStorage.getItem("myOrdersHistory");
+    if(cachedData) {
+        const ordersArray = JSON.parse(cachedData);
+        buildOrdersHTML(ordersArray);
+    } else {
+        // Agar local me kuch na ho toh placeholder mock setup kar lo
         const initialMockHistory = [
             {
                 orderId: "PD-983415",
@@ -466,27 +450,45 @@ function renderOrdersHistoryUI() {
                     { name: "🌶 Korean Kimchi Paneer Burger", qty: 1, price: 219 },
                     { name: "🍨 Premium Chocolate Ice Cream", qty: 1, price: 120 }
                 ]
-            },
-            {
-                orderId: "PD-741290",
-                timestamp: "16 May 2026, 01:15 PM",
-                status: "delivered",
-                paymentMode: "Cash on Delivery (COD)",
-                billBreakup: { subTotal: 150, tax: 8, delivery: 40, grandTotal: 198 },
-                items: [
-                    { name: "🥢 Veg Hakka Noodles (Chaumin)", qty: 2, price: 75 }
-                ]
             }
         ];
         localStorage.setItem("myOrdersHistory", JSON.stringify(initialMockHistory));
-        historyData = localStorage.getItem("myOrdersHistory");
+        buildOrdersHTML(initialMockHistory);
     }
+}
 
-    const ordersArray = JSON.parse(historyData);
+// Background Live Engine: Jaise hi admin status badlega, bina refresh screen update hogi
+function listenToLiveOrdersFirebase(email) {
+    const dbKey = email.replace(/\./g, ',');
+    
+    // Note: Agar admin panel data kisi doosre path pe save karta hai toh 'user_orders/' badal lena
+    db.ref('user_orders/' + dbKey).on('value', (snapshot) => {
+        if (snapshot.exists()) {
+            const liveData = snapshot.val();
+            
+            // Convert data into clean array format
+            let ordersArray = [];
+            if(Array.isArray(liveData)) {
+                ordersArray = liveData.filter(Boolean); // removes null elements
+            } else {
+                ordersArray = Object.keys(liveData).map(key => liveData[key]);
+            }
+
+            // Local Database ko up-to-date kar do taaki agli baar fast load ho
+            localStorage.setItem("myOrdersHistory", JSON.stringify(ordersArray));
+
+            // Instant UI Render
+            buildOrdersHTML(ordersArray);
+        }
+    });
+}
+
+// HTML Renderer Code (Aapka UI Setup)
+function buildOrdersHTML(ordersArray) {
+    const container = document.getElementById("ordersContainer");
     let htmlContent = "";
 
     ordersArray.forEach((order) => {
-        // Build items HTML Row by Row (Vertical Layout with Price)
         let itemsHtml = "";
         if(order.items && Array.isArray(order.items)){
             order.items.forEach(item => {
@@ -609,6 +611,7 @@ function resetBtnState() {
 function logoutUser() {
     localStorage.removeItem("loggedInEmail");
     localStorage.removeItem("loggedInName");
+    localStorage.removeItem("myOrdersHistory"); // logout par order cache clear
     closeSideMenu();
     checkAppLoginState();
 }
@@ -625,6 +628,7 @@ function updateUIForLoggedInUser(email, name) {
 }
 
 function updateUIForLoggedOutUser() {
+    document.getElementById("loginFormContainer").style.add = "flex";
     document.getElementById("loginFormContainer").style.display = "flex";
     document.getElementById("profileContainer").style.display = "none";
     document.getElementById("emailBox").value = "";
