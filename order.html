@@ -238,6 +238,7 @@ body {
 
 .status-delivered { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9;}
 .status-preparing { background: #fff3e0; color: #e65100; border: 1px solid #ffe0b2;}
+.status-cancelled { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2;}
 
 /* FLOATING BOTTOM NAV */
 .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px 0 15px 0; z-index: 100; box-shadow: 0 -5px 25px rgba(0,0,0,0.06); border-top-left-radius: 25px; border-top-right-radius: 25px; }
@@ -404,7 +405,7 @@ window.addEventListener('popstate', function(event) {
 });
 
 /* =========================================================
-   ⚡ HYBRID SYNC: LOCAL DATABASE FIRST + LIVE FIREBASE
+   ⚡ HYBRID SYNC: LOCAL DATABASE FIRST + LIVE FIREBASE MATCHED WITH ADMIN
    ========================================================= */
 function checkAppLoginState() {
     const savedEmail = localStorage.getItem("loggedInEmail");
@@ -421,7 +422,7 @@ function checkAppLoginState() {
         // Step 1: Pehle Local Database se super-fast render karo (Zero Lag)
         renderOrdersFromCache(); 
 
-        // Step 2: Background mein Firebase Realtime Listener trigger karo
+        // Step 2: Background mein Firebase Realtime Listener trigger karo matching Admin Structure
         listenToLiveOrdersFirebase(savedEmail);
     } else {
         updateUIForLoggedOutUser();
@@ -438,7 +439,7 @@ function renderOrdersFromCache() {
         const ordersArray = JSON.parse(cachedData);
         buildOrdersHTML(ordersArray);
     } else {
-        // Agar local me kuch na ho toh placeholder mock setup kar lo
+        // Fallback placeholder mock setup
         const initialMockHistory = [
             {
                 orderId: "PD-983415",
@@ -457,33 +458,43 @@ function renderOrdersFromCache() {
     }
 }
 
-// Background Live Engine: Jaise hi admin status badlega, bina refresh screen update hogi
+// Background Live Engine: Corresponds exactly to Admin Panel's 'users/userKey/orders'
 function listenToLiveOrdersFirebase(email) {
     const dbKey = email.replace(/\./g, ',');
     
-    // Note: Agar admin panel data kisi doosre path pe save karta hai toh 'user_orders/' badal lena
-    db.ref('user_orders/' + dbKey).on('value', (snapshot) => {
+    // EXACT MATCH WITH ADMIN WRITER PATH: users/userKey/orders
+    db.ref('users/' + dbKey + '/orders').on('value', (snapshot) => {
         if (snapshot.exists()) {
             const liveData = snapshot.val();
             
-            // Convert data into clean array format
+            // Convert Firebase object data into clean array format
             let ordersArray = [];
             if(Array.isArray(liveData)) {
-                ordersArray = liveData.filter(Boolean); // removes null elements
+                ordersArray = liveData.filter(Boolean); // removes null holes
             } else {
                 ordersArray = Object.keys(liveData).map(key => liveData[key]);
             }
 
-            // Local Database ko up-to-date kar do taaki agli baar fast load ho
+            // Sort orders chronologically (Newest first) just like Admin Dashboard
+            ordersArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+            // Local Database ko background sync me up-to-date kar do
             localStorage.setItem("myOrdersHistory", JSON.stringify(ordersArray));
 
-            // Instant UI Render
+            // Instant Live UI Update without page reload
             buildOrdersHTML(ordersArray);
+        } else {
+            localStorage.removeItem("myOrdersHistory");
+            document.getElementById("ordersContainer").innerHTML = `
+                <p style="text-align: center; color: #888; margin-top: 30px; font-weight:bold;">
+                    No orders placed yet!
+                </p>
+            `;
         }
     });
 }
 
-// HTML Renderer Code (Aapka UI Setup)
+// HTML Renderer Code
 function buildOrdersHTML(ordersArray) {
     const container = document.getElementById("ordersContainer");
     let htmlContent = "";
@@ -505,7 +516,15 @@ function buildOrdersHTML(ordersArray) {
             });
         }
 
-        const badgeClass = order.status === 'delivered' ? 'status-delivered' : 'status-preparing';
+        // Handle dynamically matching badges for Admin panel status types
+        const orderStatus = (order.status || "preparing").toLowerCase();
+        let badgeClass = "status-preparing";
+        
+        if (orderStatus === 'delivered') {
+            badgeClass = "status-delivered";
+        } else if (orderStatus === 'cancelled') {
+            badgeClass = "status-cancelled";
+        }
 
         htmlContent += `
             <div class="order-card">
@@ -530,7 +549,7 @@ function buildOrdersHTML(ordersArray) {
                         <p>₹${order.billBreakup.grandTotal}/-</p>
                         <div class="payment-mode-tag">💳 ${order.paymentMode}</div>
                     </div>
-                    <span class="status-badge ${badgeClass}">${order.status}</span>
+                    <span class="status-badge ${badgeClass}">${orderStatus}</span>
                 </div>
             </div>
         `;
@@ -611,7 +630,7 @@ function resetBtnState() {
 function logoutUser() {
     localStorage.removeItem("loggedInEmail");
     localStorage.removeItem("loggedInName");
-    localStorage.removeItem("myOrdersHistory"); // logout par order cache clear
+    localStorage.removeItem("myOrdersHistory");
     closeSideMenu();
     checkAppLoginState();
 }
@@ -628,7 +647,6 @@ function updateUIForLoggedInUser(email, name) {
 }
 
 function updateUIForLoggedOutUser() {
-    document.getElementById("loginFormContainer").style.add = "flex";
     document.getElementById("loginFormContainer").style.display = "flex";
     document.getElementById("profileContainer").style.display = "none";
     document.getElementById("emailBox").value = "";
