@@ -116,21 +116,29 @@
     .email-input { border: none; background: transparent; outline: none; font-size: 15px; color: var(--primary-dark); width: 100%; font-weight: bold; }
     .proceed-btn { width: 100%; background: #d9dada; color: white; font-size: 18px; font-weight: bold; border: none; padding: 16px; border-radius: 15px; cursor: not-allowed; transition: 0.3s ease; margin-top: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
     
-    .login-disclaimer { font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 25px; line-height: 1.5; padding: 0 5px; }
+    login-disclaimer { font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 25px; line-height: 1.5; padding: 0 5px; margin-bottom: 70px; }
+
+    /* NEW BUTTON FOR LOGGED OUT USER IN CORNER */
+    .logged-out-terms-btn { position: absolute; bottom: 20px; width: calc(100% - 60px); display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px; background: white; border-radius: 15px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 4px 10px rgba(0,0,0,0.03); color: var(--primary-dark); font-weight: bold; font-size: 14px; cursor: pointer; }
+    .logged-out-terms-btn:active { background: #FCF9F2; }
 
     .profile-container { display: none; width: 100%; padding: 0 20px; padding-bottom: 50px; }
     .profile-header-info { display: flex; align-items: center; gap: 15px; margin-bottom: 35px; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.02); }
     
-    /* UPDATED AVATAR - SAME AS LOGIN SPLASH IMAGE */
+    /* UPDATED LOGO PATH FOR PROFILE AVATAR */
     .avatar { 
         width: 60px; height: 60px; 
-        background: #FFF9F5 url('https://cdn-icons-png.flaticon.com/512/3135/3135715.png') no-repeat center center; 
+        background: #FFF9F5 url('1779766478930~3.jpg') no-repeat center center; 
         background-size: contain;
         border-radius: 50%; display: flex; align-items: center; justify-content: center; 
         box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 2px solid var(--accent-light); 
     }
     
     .user-details h2 { color: var(--primary-dark); font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+    .edit-icon { font-size: 16px; cursor: pointer; color: var(--accent-color); transition: transform 0.2s; background: #FFF5F0; padding: 5px; border-radius: 50%; display: flex; }
+    .edit-icon:active { transform: scale(0.8); }
+    .user-details p
+    { color: var(--primary-dark); font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
     .edit-icon { font-size: 16px; cursor: pointer; color: var(--accent-color); transition: transform 0.2s; background: #FFF5F0; padding: 5px; border-radius: 50%; display: flex; }
     .edit-icon:active { transform: scale(0.8); }
     .user-details p { color: var(--text-muted); font-size: 13px; font-weight: bold; margin-top: 4px; }
