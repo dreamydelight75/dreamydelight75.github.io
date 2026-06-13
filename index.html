@@ -118,10 +118,13 @@
     
     .login-disclaimer { font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 25px; line-height: 1.5; padding: 0 5px; }
 
+    /* SIMPLE LOGGED OUT BUTTON */
+    .logged-out-terms-item { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; margin-top: 25px; padding: 12px; background: white; border-radius: 15px; color: var(--primary-dark); font-weight: bold; font-size: 14px; cursor: pointer; border: 1px solid rgba(0,0,0,0.05); }
+    .logged-out-terms-item:active { background: #FCF9F2; }
+
     .profile-container { display: none; width: 100%; padding: 0 20px; padding-bottom: 50px; }
     .profile-header-info { display: flex; align-items: center; gap: 15px; margin-bottom: 35px; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.02); }
     
-    /* UPDATED AVATAR - SAME AS LOGIN SPLASH IMAGE */
     .avatar { 
         width: 60px; height: 60px; 
         background: #FFF9F5 url('https://cdn-icons-png.flaticon.com/512/3135/3135715.png') no-repeat center center; 
@@ -214,6 +217,10 @@
             <button id="proceedBtn" class="proceed-btn" disabled onclick="handleDatabaseAuth()">Proceed</button>
         </div>
         <p class="login-disclaimer">Note: We currently do not have a password reset feature. If you forget your password, please contact customer care or create a new ID.</p>
+        
+        <div class="logged-out-terms-item" onclick="window.location.href='terms.html'">
+            <span>📄</span> Legal Terms & Conditions
+        </div>
     </div>
 
     <div class="profile-container" id="profileContainer">
@@ -283,6 +290,9 @@ function getSecureCookie(name) {
 document.addEventListener("DOMContentLoaded", () => {
     updateCartBadge(); 
     
+    // REQUEST NOTIFICATION PERMISSION FOR USER ON APP START
+    requestNotificationPermission();
+
     const savedEmail = localStorage.getItem("loggedInEmail") || getSecureCookie("loggedInEmail");
     const savedName = localStorage.getItem("loggedInName") || getSecureCookie("loggedInName");
     
@@ -290,6 +300,8 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("loggedInEmail", savedEmail);
         if(savedName) localStorage.setItem("loggedInName", savedName);
         updateUIForLoggedInUser(savedEmail, savedName || "User");
+        // Start listening to order updates
+        listenToOrderNotifications(savedEmail);
     } else {
         updateUIForLoggedOutUser();
     }
@@ -447,6 +459,7 @@ function handleDatabaseAuth() {
                 saveSessionData(email, userData.name || email.split('@')[0]);
                 showTopAlert("Login Successful! 🎉", "success");
                 updateUIForLoggedInUser(email, userData.name || email.split('@')[0]);
+                listenToOrderNotifications(email);
                 closeSideMenu();
             } else { showTopAlert("Incorrect Password.", "error"); }
             resetBtnState();
@@ -456,6 +469,7 @@ function handleDatabaseAuth() {
                 saveSessionData(email, defaultName);
                 showTopAlert("Registration Successful! 🎉", "success");
                 updateUIForLoggedInUser(email, defaultName);
+                listenToOrderNotifications(email);
                 closeSideMenu(); resetBtnState();
             }).catch((err) => { showTopAlert("Database Error: " + err.message, "error"); resetBtnState(); });
         }
@@ -475,6 +489,12 @@ function resetBtnState() {
 }
 
 function logoutUser() {
+    const email = localStorage.getItem("loggedInEmail") || getSecureCookie("loggedInEmail");
+    if(email) {
+        const dbKey = email.replace(/\./g, ',');
+        db.ref('orders/' + dbKey).off(); 
+    }
+
     localStorage.removeItem("loggedInEmail"); 
     localStorage.removeItem("loggedInName");
     setSecureCookie("loggedInEmail", "", -1);
@@ -529,6 +549,37 @@ function showComingSoonModal() {
 function closeComingSoonModal() {
     const modal = document.getElementById("comingSoonModal"); modal.classList.remove("show");
     setTimeout(() => { modal.style.display = "none"; }, 300);
+}
+
+// FUNCTION TO ASK FOR WEB NOTIFICATION PERMISSION
+function requestNotificationPermission() {
+    if ("Notification" in window) {
+        if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+            Notification.requestPermission();
+        }
+    }
+}
+
+// FIREBASE LIVE LISTENER FOR ADMIN ORDER STATUS UPDATES
+function listenToOrderNotifications(email) {
+    const dbKey = email.replace(/\./g, ',');
+    const orderRef = db.ref('orders/' + dbKey);
+    
+    orderRef.on('child_changed', (snapshot) => {
+        const updatedOrder = snapshot.val();
+        if(updatedOrder && updatedOrder.status) {
+            triggerSystemNotification("Order Update!", `Your order status changed to: ${updatedOrder.status}`);
+        }
+    });
+}
+
+function triggerSystemNotification(title, message) {
+    showTopAlert(`${title} - ${message}`, "success");
+    if ("Notification" in window && Notification.permission === "granted") {
+        new Notification(title, {
+            body: message
+        });
+    }
 }
 </script>
 </body>
