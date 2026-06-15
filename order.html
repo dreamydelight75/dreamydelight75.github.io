@@ -138,6 +138,34 @@ body {
     font-weight: bold;
 }
 
+/* CUSTOM USER SECURE CODE BOX DISPLAY */
+.user-secure-code-container {
+    background: #FFF9F5;
+    border: 1.5px dashed var(--accent-light);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.secure-code-title {
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--primary-dark);
+}
+.secure-code-text {
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--accent-color);
+    background: #FFFFFF;
+    padding: 4px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(231, 111, 81, 0.2);
+    font-family: 'Courier New', Courier, monospace;
+    letter-spacing: 1px;
+}
+
 .order-items-list {
     margin-bottom: 12px;
     background: #FAFAFA; 
@@ -381,7 +409,6 @@ body {
 </div>
 
 <script>
-// Database reference initialization
 const db = firebase.database();
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -419,10 +446,7 @@ function checkAppLoginState() {
         logoutNotice.style.display = "none";
         ordersContainer.style.display = "block";
         
-        // Step 1: Pehle Local Database se super-fast render karo (Zero Lag)
         renderOrdersFromCache(); 
-
-        // Step 2: Background mein Firebase Realtime Listener trigger karo matching Admin Structure
         listenToLiveOrdersFirebase(savedEmail);
     } else {
         updateUIForLoggedOutUser();
@@ -432,19 +456,18 @@ function checkAppLoginState() {
     }
 }
 
-// Local Storage se data read karne wala engine
 function renderOrdersFromCache() {
     let cachedData = localStorage.getItem("myOrdersHistory");
     if(cachedData) {
         const ordersArray = JSON.parse(cachedData);
         buildOrdersHTML(ordersArray);
     } else {
-        // Fallback placeholder mock setup
         const initialMockHistory = [
             {
                 orderId: "PD-983415",
                 timestamp: "Today, 08:30 PM",
                 status: "preparing",
+                deliveryCode: "WAITING",
                 paymentMode: "UPI Apps (Google Pay)",
                 billBreakup: { subTotal: 339, tax: 17, delivery: 40, grandTotal: 396 },
                 items: [
@@ -458,30 +481,22 @@ function renderOrdersFromCache() {
     }
 }
 
-// Background Live Engine: Corresponds exactly to Admin Panel's 'users/userKey/orders'
 function listenToLiveOrdersFirebase(email) {
     const dbKey = email.replace(/\./g, ',');
     
-    // EXACT MATCH WITH ADMIN WRITER PATH: users/userKey/orders
     db.ref('users/' + dbKey + '/orders').on('value', (snapshot) => {
         if (snapshot.exists()) {
             const liveData = snapshot.val();
             
-            // Convert Firebase object data into clean array format
             let ordersArray = [];
             if(Array.isArray(liveData)) {
-                ordersArray = liveData.filter(Boolean); // removes null holes
+                ordersArray = liveData.filter(Boolean);
             } else {
                 ordersArray = Object.keys(liveData).map(key => liveData[key]);
             }
 
-            // Sort orders chronologically (Newest first) just like Admin Dashboard
             ordersArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
-            // Local Database ko background sync me up-to-date kar do
             localStorage.setItem("myOrdersHistory", JSON.stringify(ordersArray));
-
-            // Instant Live UI Update without page reload
             buildOrdersHTML(ordersArray);
         } else {
             localStorage.removeItem("myOrdersHistory");
@@ -494,7 +509,6 @@ function listenToLiveOrdersFirebase(email) {
     });
 }
 
-// HTML Renderer Code
 function buildOrdersHTML(ordersArray) {
     const container = document.getElementById("ordersContainer");
     let htmlContent = "";
@@ -516,7 +530,6 @@ function buildOrdersHTML(ordersArray) {
             });
         }
 
-        // Handle dynamically matching badges for Admin panel status types
         const orderStatus = (order.status || "preparing").toLowerCase();
         let badgeClass = "status-preparing";
         
@@ -526,12 +539,26 @@ function buildOrdersHTML(ordersArray) {
             badgeClass = "status-cancelled";
         }
 
+        // RENDER RIEALTIME SECURE CODE BOX FOR USER 
+        let secureCodeDisplayHtml = "";
+        if(orderStatus !== 'delivered' && orderStatus !== 'cancelled') {
+            const currentDeliveryCode = order.deliveryCode ? order.deliveryCode : "GEN-WAIT";
+            secureCodeDisplayHtml = `
+                <div class="user-secure-code-container">
+                    <span class="secure-code-title">🔑 Share Code with Delivery Partner:</span>
+                    <span class="secure-code-text">${currentDeliveryCode}</span>
+                </div>
+            `;
+        }
+
         htmlContent += `
             <div class="order-card">
                 <div class="order-header">
                     <span class="order-id">ID: #${order.orderId}</span>
                     <span class="order-date">${order.timestamp}</span>
                 </div>
+                
+                ${secureCodeDisplayHtml}
                 
                 <div class="order-items-list">
                     ${itemsHtml}
