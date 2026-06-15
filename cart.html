@@ -413,7 +413,7 @@ function calculateLiveBill() {
 
     let totalDiscount = totalMRP - subTotal;
     let tax = Math.round(subTotal * 0.05); // 5% Tax applied on discounted amount
-    let delivery = subTotal > 0 ? 40 : 0;
+    let delivery = subTotal > 0 ? 30 : 0;
     let grandTotal = subTotal + tax + delivery;
 
     document.getElementById("totalMrpAmount").innerText = totalMRP;
