@@ -45,6 +45,9 @@
     .no-address-box { text-align: center; padding: 25px 20px; background: white; border-radius: 20px; border: 2px dashed var(--accent-light); box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
     .add-addr-btn { background: var(--primary-dark); color: white; padding: 12px 25px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 15px; transition: 0.3s; }
     .add-addr-btn:active { transform: scale(0.95); }
+    
+    .add-more-addr-btn { width: 100%; background: #FFF5F0; color: var(--accent-color); border: 2px dashed var(--accent-color); padding: 14px; border-radius: 15px; font-size: 15px; font-weight: 900; cursor: pointer; transition: 0.3s; margin-bottom: 10px; }
+    .add-more-addr-btn:active { transform: scale(0.96); background: #FFE4D6; }
 
     /* PAYMENT OPTIONS */
     .payment-option { background: var(--card-bg); border-radius: 20px; padding: 18px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); cursor: pointer; border: 2px solid transparent; transition: 0.3s; }
@@ -223,7 +226,9 @@ function fetchUserAddresses() {
 
             Object.keys(userAddresses).forEach(key => {
                 const addr = userAddresses[key];
-                const fullStr = `${addr.house}, ${addr.street}, ${addr.cityPin}`;
+                
+                // 🚀 FIXED: Removed 'house' and added safe checks for street and landmark
+                const fullStr = `${addr.street}${addr.landmark ? ', ' + addr.landmark : ''}, ${addr.cityPin}`;
                 
                 let activeClass = isFirst ? "active" : "";
                 if(isFirst) chosenAddressData = addr;
@@ -240,6 +245,14 @@ function fetchUserAddresses() {
                 `;
                 isFirst = false;
             });
+
+            // 🚀 NEW: Add option to add a new address directly from checkout
+            container.innerHTML += `
+                <button class="add-more-addr-btn" onclick="window.location.replace('addresses.html')">
+                    + Add New Address
+                </button>
+            `;
+
         } else {
             container.innerHTML = `
                 <div class="no-address-box">
