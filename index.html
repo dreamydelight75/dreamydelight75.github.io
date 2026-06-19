@@ -268,8 +268,13 @@ function getSecureCookie(name) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    // SHOW WELCOME POPUP AUTOMATICALLY
-    setTimeout(() => { showWelcomeModal(); }, 600);
+    // ✅ YAHAN CHANGE KIYA HAI - WELCOME POPUP AB SIRF APP OPEN HONE PAR AAYEGA ✅
+    if (!sessionStorage.getItem("welcomeShown")) {
+        setTimeout(() => { 
+            showWelcomeModal(); 
+            sessionStorage.setItem("welcomeShown", "true");
+        }, 600);
+    }
 
     updateCartBadge(); 
     
@@ -324,17 +329,17 @@ function closeWelcomeModal() {
     modal.classList.remove("show");
 }
 
-// ✅ PASSWORD TOGGLE FUNCTION ✅
+// PASSWORD TOGGLE FUNCTION 
 function togglePasswordVisibility() {
     const passInput = document.getElementById("passBox");
     const toggleIcon = document.getElementById("togglePassword");
     
     if (passInput.type === "password") {
         passInput.type = "text";
-        toggleIcon.innerText = "🙈"; // Aankh band emoji jab password dikhe
+        toggleIcon.innerText = "🙈"; 
     } else {
         passInput.type = "password";
-        toggleIcon.innerText = "👁️"; // Aankh khuli emoji jab password hide ho
+        toggleIcon.innerText = "👁️"; 
     }
 }
 
@@ -513,7 +518,7 @@ function updateUIForLoggedOutUser() {
     document.getElementById("profileContainer").style.display = "none";
     document.getElementById("emailBox").value = ""; 
     document.getElementById("passBox").value = "";
-    document.getElementById("passBox").type = "password"; // Reset pass box visually
+    document.getElementById("passBox").type = "password"; 
     document.getElementById("togglePassword").innerText = "👁️";
     validateLogin(); 
 }
