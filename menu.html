@@ -180,8 +180,15 @@
         <div class="splash-img"></div>
         <h1 class="login-title">LOGIN</h1>
         <div style="width: 100%;">
-            <div class="input-group"><input type="email" id="emailBox" class="email-input" placeholder="Enter your email (@gmail.com)"></div>
-            <div class="input-group"><input type="password" id="passBox" class="email-input" placeholder="Enter password (Min 8 chars)"></div>
+            <div class="input-group">
+                <input type="email" id="emailBox" class="email-input" placeholder="Enter your email (@gmail.com)">
+            </div>
+            
+            <div class="input-group" style="position: relative;">
+                <input type="password" id="passBox" class="email-input" placeholder="Enter password (Min 8 chars)" style="padding-right: 40px;">
+                <span id="togglePassword" onclick="togglePasswordVisibility()" style="position: absolute; right: 15px; cursor: pointer; font-size: 18px; color: var(--text-muted); user-select: none;">👁️</span>
+            </div>
+            
             <button id="proceedBtn" class="proceed-btn" disabled onclick="handleDatabaseAuth()">Proceed</button>
         </div>
         <p class="login-disclaimer">Note: We currently do not have a password reset feature. If you forget your password, please contact customer care or create a new ID.</p>
@@ -267,6 +274,20 @@ document.addEventListener("DOMContentLoaded", () => {
         renderUserMenuCards(serverProducts);
     });
 });
+
+// ✅ PASSWORD TOGGLE FUNCTION ✅
+function togglePasswordVisibility() {
+    const passInput = document.getElementById("passBox");
+    const toggleIcon = document.getElementById("togglePassword");
+    
+    if (passInput.type === "password") {
+        passInput.type = "text";
+        toggleIcon.innerText = "🙈"; 
+    } else {
+        passInput.type = "password";
+        toggleIcon.innerText = "👁️"; 
+    }
+}
 
 document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
 
@@ -489,7 +510,10 @@ function updateUIForLoggedInUser(email, name) {
 function updateUIForLoggedOutUser() {
     document.getElementById("loginFormContainer").style.display = "flex";
     document.getElementById("profileContainer").style.display = "none";
-    document.getElementById("emailBox").value = ""; document.getElementById("passBox").value = "";
+    document.getElementById("emailBox").value = ""; 
+    document.getElementById("passBox").value = "";
+    document.getElementById("passBox").type = "password"; // RESET PASSWORD BOX TO HIDDEN
+    document.getElementById("togglePassword").innerText = "👁️";
     validateLogin(); 
 }
 
