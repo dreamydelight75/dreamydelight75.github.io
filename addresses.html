@@ -61,8 +61,9 @@
     
     .form-section { background: var(--card-bg); padding: 15px; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02); }
     .form-section-title { font-size: 12px; color: var(--text-muted); font-weight: bold; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px; }
-    .input-box { width: 100%; padding: 14px; border: 1px solid rgba(0,0,0,0.08); border-radius: 12px; margin-bottom: 12px; font-size: 14px; outline: none; background: #FAFAFA; transition: 0.3s; font-weight: bold; color: var(--primary-dark); }
-    .input-box:focus { border-color: var(--accent-color); background: white; }
+    .input-box { width: 100%; padding: 14px; border: 1px solid rgba(0,0,0,0.08); border-radius: 12px; margin-bottom: 12px; font-size: 14px; outline: none; background: #FAFAFA; transition: 0.3s; font-weight: bold; color: var(--primary-dark); appearance: none; -webkit-appearance: none; }
+    select.input-box { background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%232C363F%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 14px top 50%; background-size: 12px auto; }
+    .input-box:focus { border-color: var(--accent-color); background-color: white; }
     
     /* Tag Pills */
     .tag-selector { display: flex; gap: 10px; margin-bottom: 5px; }
@@ -166,11 +167,21 @@
 
         <div class="form-section">
             <div class="form-section-title">Location Details</div>
-            <input type="text" id="houseNo" class="input-box" placeholder="Flat / House No. / Building Name">
-            <input type="text" id="street" class="input-box" placeholder="Street / Area / Sector">
-            <input type="text" id="landmark" class="input-box" placeholder="Landmark (Optional)">
-            <!-- PINCODE PLACEHOLDER UPDATED TO GUIDE USER -->
-            <input type="text" id="cityPin" class="input-box" placeholder="City & Pincode (Only 832101)">
+            
+            <select id="street" class="input-box">
+                <option value="" disabled selected>Select Street / Area</option>
+                <option value="Block Road Baharagora">Block Road Baharagora</option>
+                <option value="Market Road Baharagora">Market Road Baharagora</option>
+            </select>
+
+            <select id="landmark" class="input-box">
+                <option value="" disabled selected>Select Nearby Landmark</option>
+                <option value="Near Baharagora post office">Near Baharagora post office</option>
+                <option value="Near model school Baharagora">Near model school Baharagora</option>
+                <option value="Near Kolkata Sweet">Near Kolkata Sweet</option>
+            </select>
+
+            <input type="text" id="cityPin" class="input-box" value="832101" readonly style="background: #e9ecef; cursor: not-allowed; color: #888; border-color: transparent;">
         </div>
 
         <div class="form-section">
@@ -299,6 +310,16 @@ function checkAppLoginState() {
         logoutNotice.style.display = "none";
         addressSection.style.display = "block";
         
+        // 🚀 NEW: Load instantly from local storage for faster UI
+        const cachedAddresses = localStorage.getItem("cached_addresses_" + userDbKey);
+        if(cachedAddresses) {
+            try {
+                currentAddresses = JSON.parse(cachedAddresses);
+                renderAddressCards();
+            } catch (e) { console.error("Cache read error", e); }
+        }
+
+        // Fetch fresh data from Firebase in background
         fetchAddressesFromFirebase();
         fetchUserProfileData();
     } else {
@@ -321,6 +342,10 @@ function fetchUserProfileData() {
 function fetchAddressesFromFirebase() {
     db.ref('users/' + userDbKey + '/addresses').on('value', (snapshot) => {
         currentAddresses = snapshot.exists() ? snapshot.val() : {};
+        
+        // 🚀 NEW: Save fresh addresses to local storage for the next visit
+        localStorage.setItem("cached_addresses_" + userDbKey, JSON.stringify(currentAddresses));
+        
         renderAddressCards();
     });
 }
@@ -337,7 +362,9 @@ function renderAddressCards() {
 
     addressKeys.forEach((key) => {
         const addr = currentAddresses[key];
-        const fullAddrStr = `${addr.house}, ${addr.street}${addr.landmark ? ', ' + addr.landmark : ''}, ${addr.cityPin}`;
+        
+        // Updated to remove the house number from the displayed string
+        const fullAddrStr = `${addr.street}${addr.landmark ? ', ' + addr.landmark : ''}, ${addr.cityPin}`;
         
         container.innerHTML += `
             <div class="address-card">
@@ -365,20 +392,19 @@ function openAddressForm(editKey = null) {
         const data = currentAddresses[editKey];
         document.getElementById("contactName").value = data.name;
         document.getElementById("contactPhone").value = data.phone;
-        document.getElementById("houseNo").value = data.house;
-        document.getElementById("street").value = data.street;
+        document.getElementById("street").value = data.street || "";
         document.getElementById("landmark").value = data.landmark || "";
-        document.getElementById("cityPin").value = data.cityPin;
         setTagActive(data.tag);
     } else {
         document.getElementById("contactName").value = fetchedProfileName;
         document.getElementById("contactPhone").value = fetchedProfileMobile;
-        document.getElementById("houseNo").value = "";
         document.getElementById("street").value = "";
         document.getElementById("landmark").value = "";
-        document.getElementById("cityPin").value = "";
         setTagActive("Home");
     }
+
+    // Pincode is always strictly 832101
+    document.getElementById("cityPin").value = "832101";
 
     overlay.style.display = "flex";
     setTimeout(() => { modal.classList.add("show"); }, 10);
@@ -419,26 +445,17 @@ function saveAddressToFirebase() {
     const addrData = {
         name: document.getElementById("contactName").value.trim(),
         phone: document.getElementById("contactPhone").value.trim(),
-        house: document.getElementById("houseNo").value.trim(),
-        street: document.getElementById("street").value.trim(),
-        landmark: document.getElementById("landmark").value.trim(),
-        cityPin: document.getElementById("cityPin").value.trim(),
+        street: document.getElementById("street").value,
+        landmark: document.getElementById("landmark").value,
+        cityPin: "832101", // Fixed PIN
         tag: document.getElementById("addressTag").value
     };
 
-    if(!addrData.name || !addrData.phone || !addrData.house || !addrData.street || !addrData.cityPin) {
+    if(!addrData.name || !addrData.phone || !addrData.street) {
         showTopAlert("Please fill all required fields!", "error"); return;
     }
     if(addrData.phone.length < 10) {
         showTopAlert("Enter a valid 10-digit number!", "error"); return;
-    }
-
-    // ==========================================
-    // 🚀 NEW PINCODE RESTRICTION LOGIC 🚀
-    // ==========================================
-    if (!addrData.cityPin.includes("832101") && !addrData.cityPin.includes("832102")) {
-        showTopAlert("Delivery not possible here", "error"); 
-        return;
     }
 
     btn.innerText = "Saving..."; btn.disabled = true;
@@ -446,7 +463,6 @@ function saveAddressToFirebase() {
 
     db.ref('users/' + userDbKey + '/addresses/' + refKey).set(addrData).then(() => {
         showTopAlert("Address saved successfully!", "success");
-        // Using programmatic click on overlay to close smoothly via history
         closeAddressForm(null, false);
         btn.innerText = "Save Address"; btn.disabled = false;
     }).catch((err) => {
@@ -506,8 +522,15 @@ function resetBtnState() {
 }
 
 function logoutUser() {
-    localStorage.removeItem("loggedInEmail"); localStorage.removeItem("loggedInName");
-    closeSideMenu(); checkAppLoginState();
+    // 🚀 NEW: Clear local cached data for privacy when logging out
+    if(userDbKey) {
+        localStorage.removeItem("cached_addresses_" + userDbKey);
+    }
+    
+    localStorage.removeItem("loggedInEmail"); 
+    localStorage.removeItem("loggedInName");
+    closeSideMenu(); 
+    checkAppLoginState();
 }
 
 function updateUIForLoggedInUser(email, name) {
