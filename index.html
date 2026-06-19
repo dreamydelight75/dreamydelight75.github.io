@@ -268,11 +268,36 @@ function getSecureCookie(name) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    // ✅ YAHAN CHANGE KIYA HAI - WELCOME POPUP AB SIRF APP OPEN HONE PAR AAYEGA ✅
-    if (!sessionStorage.getItem("welcomeShown")) {
+    // ✅ NEW ADVANCED LOCALSTORAGE LOGIC: Max 6 times/day, 4 hours gap ✅
+    const now = new Date().getTime();
+    const today = new Date().toDateString(); 
+    const fourHours = 4 * 60 * 60 * 1000; // 4 hours in milliseconds
+
+    let showDate = localStorage.getItem("welcomeShowDate");
+    let showCount = parseInt(localStorage.getItem("welcomeShowCount")) || 0;
+    let lastShown = parseInt(localStorage.getItem("welcomeLastShown")) || 0;
+
+    let shouldShow = false;
+
+    if (showDate !== today) {
+        // Naya दिन - सब कुछ रिसेट
+        shouldShow = true;
+        showCount = 1;
+    } else {
+        // अगर दिन वही है तो 6 बार की लिमिट और 4 घंटे का गैप चेक करो
+        if (showCount < 6 && (now - lastShown) >= fourHours) {
+            shouldShow = true;
+            showCount++;
+        }
+    }
+
+    if (shouldShow) {
         setTimeout(() => { 
             showWelcomeModal(); 
-            sessionStorage.setItem("welcomeShown", "true");
+            // LocalStorage को अपडेट करो
+            localStorage.setItem("welcomeShowDate", today);
+            localStorage.setItem("welcomeShowCount", showCount);
+            localStorage.setItem("welcomeLastShown", now);
         }, 600);
     }
 
