@@ -70,30 +70,30 @@
     /* SIDE MENU UPDATES */
     .side-menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(44, 54, 63, 0.7); z-index: 998; opacity: 0; pointer-events: none; transition: 0.3s ease-in-out; backdrop-filter: blur(3px); }
     .side-menu-overlay.active { opacity: 1; pointer-events: auto; }
-    
+
     .side-menu { position: fixed; top: 0; left: -100%; width: 80%; max-width: 320px; height: 100vh; background: var(--bg-color); z-index: 999; transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1); display: flex; flex-direction: column; overflow-y: auto; box-shadow: 5px 0 25px rgba(0,0,0,0.15); }
     .side-menu.active { left: 0; }
     .side-menu-top { display: flex; justify-content: space-between; align-items: center; padding: 25px 20px 10px 20px; }
     .back-btn { font-size: 26px; color: var(--primary-dark); cursor: pointer; background: none; border: none; }
-    
+
     .login-container { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 0 30px; }
     .splash-img { width: 180px; height: 180px; background: url('https://cdn-icons-png.flaticon.com/512/3135/3135715.png') no-repeat center center; background-size: contain; margin-bottom: 20px; opacity: 0.9; }
     .login-title { font-size: 28px; color: var(--primary-dark); font-weight: 900; margin-bottom: 30px; letter-spacing: 1px; }
     .input-group { display: flex; align-items: center; width: 100%; background: white; padding: 15px 20px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); }
     .email-input { border: none; background: transparent; outline: none; font-size: 15px; color: var(--primary-dark); width: 100%; font-weight: bold; }
     .proceed-btn { width: 100%; background: #d9dada; color: white; font-size: 18px; font-weight: bold; border: none; padding: 16px; border-radius: 15px; cursor: not-allowed; transition: 0.3s ease; margin-top: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-    
+
     .login-disclaimer { font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 25px; line-height: 1.5; padding: 0 5px; }
 
     .profile-container { display: none; width: 100%; padding: 0 20px; padding-bottom: 50px; }
     .profile-header-info { display: flex; align-items: center; gap: 15px; margin-bottom: 35px; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.02); }
     .avatar { width: 60px; height: 60px; background: #FFF9F5 url('https://cdn-icons-png.flaticon.com/512/3135/3135715.png') no-repeat center center; background-size: contain; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 2px solid var(--accent-light); }
-    
+
     .user-details h2 { color: var(--primary-dark); font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
     .edit-icon { font-size: 16px; cursor: pointer; color: var(--accent-color); transition: transform 0.2s; background: #FFF5F0; padding: 5px; border-radius: 50%; display: flex; }
     .edit-icon:active { transform: scale(0.8); }
     .user-details p { color: var(--text-muted); font-size: 13px; font-weight: bold; margin-top: 4px; }
-    
+
     .profile-menu-list { display: flex; flex-direction: column; background: white; border-radius: 20px; padding: 10px 0; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02); }
     .profile-menu-item { display: flex; align-items: center; gap: 15px; padding: 16px 20px; color: var(--primary-dark); font-size: 15px; font-weight: bold; cursor: pointer; border-bottom: 1px solid rgba(0,0,0,0.03); transition: background 0.2s; }
     .profile-menu-item:active { background: #FCF9F2; }
@@ -132,7 +132,7 @@
 
     <div class="bill-section" id="billSection">
         <div class="bill-title">Bill Details</div>
-        
+
         <div class="bill-row">
             <span>Total MRP</span>
             <span>₹<span id="totalMrpAmount">0</span></span>
@@ -141,7 +141,7 @@
             <span>Discount Savings</span>
             <span>- ₹<span id="discountAmount">0</span></span>
         </div>
-        
+
         <div class="bill-row">
             <span>Item Subtotal</span>
             <span>₹<span id="subTotal">0</span></span>
@@ -188,7 +188,7 @@
     <div class="side-menu-top">
         <button class="back-btn" onclick="closeSideMenu()">← Back</button>
     </div>
-    
+
     <div class="login-container" id="loginFormContainer">
         <div class="splash-img"></div>
         <h1 class="login-title">LOGIN</h1>
@@ -277,7 +277,6 @@ function closeSideMenu() {
 }
 // ==========================================
 
-
 document.addEventListener("DOMContentLoaded", () => {
     renderCartUI();
     checkLoginState();
@@ -311,7 +310,11 @@ function checkLoginState() {
         updateUIForLoggedOutUser();
         if(cartData.length > 0) {
             btn.innerText = "Login to Checkout";
-            btn.onclick = function() { showComingSoonModal('login_required'); };
+            // UPDATED LOGIC: Redirect to index.html with a trigger flag
+            btn.onclick = function() { 
+                localStorage.setItem('openLoginSidebar', 'true');
+                window.location.href = 'index.html'; 
+            };
         }
     }
 }
@@ -320,7 +323,7 @@ function renderCartUI() {
     const container = document.getElementById("cartContainer");
     const billSection = document.getElementById("billSection");
     const checkoutBtn = document.getElementById("checkoutBtn");
-    
+
     if(cartData.length === 0) {
         container.innerHTML = `
             <div class="empty-cart-msg">
@@ -337,13 +340,13 @@ function renderCartUI() {
 
     billSection.style.display = "block";
     checkoutBtn.style.display = "block";
-    
+
     let html = "";
     cartData.forEach((item) => {
         // Logic to extract original price from menuCache
         let menuItem = menuCache.find(m => m.id === item.id);
         let originalPrice = item.price; // Default
-        
+
         if (menuItem && menuItem.price) {
             originalPrice = parseFloat(menuItem.price);
         }
@@ -371,7 +374,7 @@ function renderCartUI() {
         </div>
         `;
     });
-    
+
     container.innerHTML = html;
     calculateLiveBill();
     updateCartBadge();
@@ -406,7 +409,7 @@ function calculateLiveBill() {
         if (menuItem && menuItem.price) {
             originalPrice = parseFloat(menuItem.price);
         }
-        
+
         totalMRP += (originalPrice * item.qty);
         subTotal += (item.price * item.qty);
     });
@@ -445,7 +448,7 @@ function handleDatabaseAuth() {
     const email = document.getElementById("emailBox").value.trim().toLowerCase();
     const pass = document.getElementById("passBox").value;
     const btn = document.getElementById("proceedBtn");
-    
+
     btn.innerText = "Processing...";
     btn.disabled = true;
 
@@ -552,23 +555,12 @@ function showTopAlert(msg, type) {
 function showComingSoonModal(mode) {
     const modal = document.getElementById("comingSoonModal");
     const actionBtn = document.getElementById("modalActionBtn");
-    
-    if(mode === 'login_required') {
-        document.getElementById("modalIcon").innerText = "🔒";
-        document.getElementById("modalTitle").innerText = "Login Required";
-        document.getElementById("modalDesc").innerText = "Please log in first to proceed with your order.";
-        
-        actionBtn.onclick = function() {
-            closeComingSoonModal();
-            openSideMenu();
-        };
-    } else {
-        document.getElementById("modalIcon").innerText = "🎁";
-        document.getElementById("modalTitle").innerText = "Coming Soon!";
-        document.getElementById("modalDesc").innerText = "We are working hard to bring you exciting updates. Stay tuned!";
-        actionBtn.onclick = closeComingSoonModal;
-    }
-    
+
+    document.getElementById("modalIcon").innerText = "🎁";
+    document.getElementById("modalTitle").innerText = "Coming Soon!";
+    document.getElementById("modalDesc").innerText = "We are working hard to bring you exciting updates. Stay tuned!";
+    actionBtn.onclick = closeComingSoonModal;
+
     modal.style.display = "flex";
     setTimeout(() => { modal.classList.add("show"); }, 10);
 }
