@@ -110,8 +110,12 @@
     .login-container { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 0 30px; }
     .splash-img { width: 180px; height: 180px; background: url('https://cdn-icons-png.flaticon.com/512/3135/3135715.png') no-repeat center center; background-size: contain; margin-bottom: 20px; opacity: 0.9; }
     .login-title { font-size: 28px; color: var(--primary-dark); font-weight: 900; margin-bottom: 30px; letter-spacing: 1px; }
-    .input-group { display: flex; align-items: center; width: 100%; background: white; padding: 15px 20px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); }
+    
+    /* UPDATED INPUT GROUP FOR PASSWORD TOGGLE */
+    .input-group { position: relative; display: flex; align-items: center; width: 100%; background: white; padding: 15px 20px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); }
     .email-input { border: none; background: transparent; outline: none; font-size: 15px; color: var(--primary-dark); width: 100%; font-weight: bold; }
+    .password-toggle-btn { position: absolute; right: 15px; cursor: pointer; font-size: 18px; user-select: none; color: var(--text-muted); }
+    
     .proceed-btn { width: 100%; background: #d9dada; color: white; font-size: 18px; font-weight: bold; border: none; padding: 16px; border-radius: 15px; cursor: not-allowed; transition: 0.3s ease; margin-top: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
     
     .login-disclaimer { font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 25px; line-height: 1.5; padding: 0 5px; }
@@ -119,7 +123,6 @@
     .profile-container { display: none; width: 100%; padding: 0 20px; padding-bottom: 50px; }
     .profile-header-info { display: flex; align-items: center; gap: 15px; margin-bottom: 35px; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.02); }
     
-    /* UPDATED AVATAR - SAME AS LOGIN SPLASH IMAGE */
     .avatar { 
         width: 60px; height: 60px; 
         background: #FFF9F5 url('https://cdn-icons-png.flaticon.com/512/3135/3135715.png') no-repeat center center; 
@@ -149,6 +152,18 @@
     .custom-modal.show { display: flex; opacity: 1; }
     .modal-content { background: white; padding: 30px 20px; border-radius: 25px; text-align: center; width: 80%; max-width: 320px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); transform: translateY(20px) scale(0.95); transition: transform 0.3s ease; }
     .close-modal-btn { background: var(--accent-color); color: white; border: none; padding: 14px 30px; border-radius: 15px; font-size: 15px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
+
+    /* PREMIUM WELCOME MODAL STYLES */
+    .welcome-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0, 0, 0, 0.65); z-index: 10005; justify-content: center; align-items: center; backdrop-filter: blur(5px); opacity: 0; transition: opacity 0.4s ease; }
+    .welcome-modal.show { display: flex; opacity: 1; }
+    .welcome-content { background: linear-gradient(135deg, #FF004D, #FF7EB3); padding: 40px 25px; border-radius: 25px; text-align: center; width: 85%; max-width: 350px; box-shadow: 0 15px 40px rgba(255, 0, 77, 0.35); transform: translateY(30px) scale(0.9); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; color: white; border: 2px solid #FFB8D2; }
+    .welcome-content.show { transform: translateY(0) scale(1); }
+    .welcome-icon { font-size: 55px; margin-bottom: 15px; display: inline-block; animation: popIcon 0.6s ease; }
+    @keyframes popIcon { 0% { transform: scale(0); } 80% { transform: scale(1.2); } 100% { transform: scale(1); } }
+    .welcome-title { font-size: 24px; font-weight: 900; margin-bottom: 15px; letter-spacing: 1px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); font-family: "Trebuchet MS", sans-serif; }
+    .welcome-text { font-size: 15px; line-height: 1.6; margin-bottom: 25px; font-weight: 500; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+    .welcome-btn { background: white; color: #FF004D; border: none; padding: 15px 30px; border-radius: 20px; font-size: 16px; font-weight: bold; cursor: pointer; width: 100%; box-shadow: 0 5px 15px rgba(0,0,0,0.15); transition: 0.2s; }
+    .welcome-btn:active { transform: scale(0.95); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 </style>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -167,7 +182,6 @@
     <div class="top-row">
         <div class="menu-icon" onclick="openSideMenu()">☰</div>
         <div class="brand-title" id="displayBrandTitle"><img src="https://raw.githubusercontent.com/chandan75-coder/chandan75-coder.github.io/refs/heads/main/1779766478930%7E2.jpg" alt="Logo" style="height: 50px;"></div>
-
     </div>
 </div>
 
@@ -208,7 +222,8 @@
                 <input type="email" id="emailBox" class="email-input" placeholder="Enter your email (@gmail.com)">
             </div>
             <div class="input-group">
-                <input type="password" id="passBox" class="email-input" placeholder="Enter password (Min 8 chars)">
+                <input type="password" id="passBox" class="email-input" placeholder="Enter password (Min 8 chars)" style="padding-right: 35px;">
+                <span id="togglePassword" class="password-toggle-btn">👁️</span>
             </div>
             <button id="proceedBtn" class="proceed-btn" disabled onclick="handleDatabaseAuth()">Proceed</button>
         </div>
@@ -241,6 +256,15 @@
         <h2 style="color: #2C363F; margin-bottom: 10px;">Coming Soon!</h2>
         <p style="color: #888; font-size: 14px; margin-bottom: 20px;">We are working hard to bring you exciting rewards. Stay tuned!</p>
         <button class="close-modal-btn" onclick="closeComingSoonModal()">Got It</button>
+    </div>
+</div>
+
+<div id="welcomeModal" class="welcome-modal">
+    <div class="welcome-content" id="welcomeContent">
+        <div class="welcome-icon">✨🍽️✨</div>
+        <h2 class="welcome-title">Welcome to Our Family! ❤️</h2>
+        <p class="welcome-text">We are absolutely thrilled to have you here! Aapke pyar aur support se hum ab officially internet par live hain. 🎉<br><br>Now you can easily order your favorite Dreamy Delight dishes online, anytime. Let’s make your meals magical!</p>
+        <button class="welcome-btn" onclick="closeWelcomeModal()">Explore Menu</button>
     </div>
 </div>
 
@@ -447,6 +471,7 @@ function handleDatabaseAuth() {
                 showTopAlert("Login Successful! 🎉", "success");
                 updateUIForLoggedInUser(email, userData.name || email.split('@')[0]);
                 closeSideMenu();
+                checkAndShowWelcomeModal(email); // SHOW WELCOME MODAL
             } else { showTopAlert("Incorrect Password.", "error"); }
             resetBtnState();
         } else {
@@ -455,7 +480,9 @@ function handleDatabaseAuth() {
                 saveSessionData(email, defaultName);
                 showTopAlert("Registration Successful! 🎉", "success");
                 updateUIForLoggedInUser(email, defaultName);
-                closeSideMenu(); resetBtnState();
+                closeSideMenu(); 
+                resetBtnState();
+                checkAndShowWelcomeModal(email); // SHOW WELCOME MODAL
             }).catch((err) => { showTopAlert("Database Error: " + err.message, "error"); resetBtnState(); });
         }
     }).catch((error) => { showTopAlert("Network Error: " + error.message, "error"); resetBtnState(); });
@@ -495,7 +522,10 @@ function updateUIForLoggedInUser(email, name) {
 function updateUIForLoggedOutUser() {
     document.getElementById("loginFormContainer").style.display = "flex";
     document.getElementById("profileContainer").style.display = "none";
-    document.getElementById("emailBox").value = ""; document.getElementById("passBox").value = "";
+    document.getElementById("emailBox").value = ""; 
+    document.getElementById("passBox").value = "";
+    document.getElementById("passBox").type = "password"; // reset password field type
+    document.getElementById("togglePassword").innerText = "👁️"; // reset icon
     validateLogin(); 
 }
 
@@ -511,6 +541,13 @@ function validateLogin() {
     }
 }
 emailInput.addEventListener('input', validateLogin); passInput.addEventListener('input', validateLogin);
+
+// TOGGLE PASSWORD VISIBILITY SCRIPT
+document.getElementById('togglePassword').addEventListener('click', function () {
+    const type = passInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    passInput.setAttribute('type', type);
+    this.innerText = type === 'password' ? '👁️' : '🙈';
+});
 
 function showTopAlert(msg, type) {
     const alertBox = document.getElementById("topAlert");
@@ -528,6 +565,31 @@ function showComingSoonModal() {
 function closeComingSoonModal() {
     const modal = document.getElementById("comingSoonModal"); modal.classList.remove("show");
     setTimeout(() => { modal.style.display = "none"; }, 300);
+}
+
+// WELCOME MODAL FUNCTIONS
+function checkAndShowWelcomeModal(email) {
+    // Ye check karega ki user is device me pehle baar login/register kiya hai kya
+    if (!localStorage.getItem('welcomed_' + email)) {
+        setTimeout(() => {
+            const modal = document.getElementById("welcomeModal");
+            const content = document.getElementById("welcomeContent");
+            modal.style.display = "flex";
+            setTimeout(() => { 
+                modal.classList.add("show"); 
+                content.classList.add("show");
+            }, 10);
+        }, 500); // 0.5 sec delay after menu closes to look smooth
+        localStorage.setItem('welcomed_' + email, 'true');
+    }
+}
+
+function closeWelcomeModal() {
+    const modal = document.getElementById("welcomeModal");
+    const content = document.getElementById("welcomeContent");
+    modal.classList.remove("show");
+    content.classList.remove("show");
+    setTimeout(() => { modal.style.display = "none"; }, 400);
 }
 </script>
 </body>
