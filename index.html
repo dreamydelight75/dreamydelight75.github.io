@@ -22,29 +22,17 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
     body { background: var(--bg-color); padding-bottom: 90px; overflow-x: hidden; }
     
-    /* CURVED HEADER - COMPLETELY LIGHT YELLOW NOW */
+    /* CURVED HEADER */
     .header { background: #FFE66D; padding: 15px 15px 25px 15px; border-bottom-left-radius: 25px; border-bottom-right-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
     .top-row { display: flex; align-items: center; position: relative; height: 35px; }
     
-    /* Menu Icon color changed to dark so it's visible on yellow background */
     .menu-icon { font-size: 30px; cursor: pointer; z-index: 2; color: var(--primary-dark); }
     
-    /* UPDATED BRAND TITLE: HIGHLIGHT RED COLOR */
     .brand-title { 
-        position: absolute; 
-        width: 100%; 
-        left: 0; 
-        text-align: center; 
-        color: #FF0000; /* Highlighted Red */
-        font-size: 26px; 
-        font-weight: 900; 
-        letter-spacing: 1px; 
-        font-family: "Trebuchet MS", sans-serif; 
-        z-index: 1; 
-        pointer-events: none; 
+        position: absolute; width: 100%; left: 0; text-align: center; color: #FF0000; font-size: 26px; font-weight: 900; letter-spacing: 1px; font-family: "Trebuchet MS", sans-serif; z-index: 1; pointer-events: none; 
     }
     
-    /* UPDATED SLIDER: MOVED DOWN TO FIX CLASH WITH HEADER */
+    /* SLIDER */
     .slider { width: 92%; height: 200px; position: relative; overflow: hidden; margin: 20px auto 20px auto; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); z-index: 5; background: white; }
     .slides { display: flex; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); }
     .slide { min-width: 100%; height: 100%; }
@@ -55,44 +43,16 @@
     .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); transition: 0.3s; }
     .dot.active { background: white; width: 24px; border-radius: 10px; }
     
-    /* MENU GRID (SHADOW FIX EKDUM PROPER) */
+    /* MENU GRID */
     .title { font-size: 26px; color: var(--primary-dark); padding: 10px 20px 20px 20px; font-weight: 900; letter-spacing: 0.5px; }
     .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 20px; margin-bottom: 35px; }
     
-    .card { 
-        background: transparent; 
-        padding: 12px 10px; 
-        text-align: center; 
-        border: 2px solid var(--accent-light); /* Orange Theme color outline */
-        border-radius: 20px; 
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12); /* DARKER SHADOW ADDED FOR THE OUTLINE BOX */
-        cursor: pointer; 
-        transition: transform 0.2s, border-color 0.3s, box-shadow 0.2s; 
-    }
-    .card:active { 
-        transform: scale(0.95); 
-        border-color: var(--accent-color); 
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); 
-    }
+    .card { background: transparent; padding: 12px 10px; text-align: center; border: 2px solid var(--accent-light); border-radius: 20px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12); cursor: pointer; transition: transform 0.2s, border-color 0.3s, box-shadow 0.2s; }
+    .card:active { transform: scale(0.95); border-color: var(--accent-color); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); }
+    .card img { width: 100%; height: 150px; border-radius: 15px; object-fit: contain; background: transparent; margin-bottom: 10px; filter: drop-shadow(0 15px 20px rgba(0, 0, 0, 0.35)); }
+    .card h3 { margin-top: 5px; color: var(--primary-dark); font-size: 16px; font-weight: 900; }
     
-    .card img { 
-        width: 100%; 
-        height: 150px; 
-        border-radius: 15px; 
-        object-fit: contain; 
-        background: transparent; 
-        margin-bottom: 10px; 
-        filter: drop-shadow(0 15px 20px rgba(0, 0, 0, 0.35)); /* PROPER DARK 3D SHADOW FOR PICTURE */
-    }
-    
-    .card h3 { 
-        margin-top: 5px; 
-        color: var(--primary-dark); 
-        font-size: 16px; 
-        font-weight: 900; 
-    }
-    
-    /* FLOATING BOTTOM NAV */
+    /* BOTTOM NAV */
     .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px 0 15px 0; z-index: 100; box-shadow: 0 -5px 25px rgba(0,0,0,0.06); border-top-left-radius: 25px; border-top-right-radius: 25px; }
     .bottom-nav div { color: var(--text-muted); text-align: center; font-size: 12px; cursor: pointer; font-weight: bold; transition: 0.3s; }
     .icon { font-size: 24px; margin-bottom: 3px; font-style: normal; transition: transform 0.2s; }
@@ -101,7 +61,7 @@
     .active-nav { color: var(--accent-color) !important; }
     .cart-badge { position: absolute; top: -5px; right: -8px; background: var(--accent-color); color: white; font-size: 10px; font-weight: bold; border-radius: 50%; width: 18px; height: 18px; display: none; align-items: center; justify-content: center; border: 2px solid white; box-sizing: content-box; }
     
-    /* SIDE MENU UPDATES */
+    /* SIDE MENU */
     .side-menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(44, 54, 63, 0.7); z-index: 998; opacity: 0; pointer-events: none; transition: 0.3s ease-in-out; backdrop-filter: blur(3px); }
     .side-menu-overlay.active { opacity: 1; pointer-events: auto; }
     
@@ -116,30 +76,12 @@
     .input-group { display: flex; align-items: center; width: 100%; background: white; padding: 15px 20px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); }
     .email-input { border: none; background: transparent; outline: none; font-size: 15px; color: var(--primary-dark); width: 100%; font-weight: bold; }
     .proceed-btn { width: 100%; background: #d9dada; color: white; font-size: 18px; font-weight: bold; border: none; padding: 16px; border-radius: 15px; cursor: not-allowed; transition: 0.3s ease; margin-top: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-    
-    login-disclaimer { font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 25px; line-height: 1.5; padding: 0 5px; margin-bottom: 70px; }
-
-    /* NEW BUTTON FOR LOGGED OUT USER IN CORNER */
-    .logged-out-terms-btn { position: absolute; bottom: 20px; width: calc(100% - 60px); display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px; background: white; border-radius: 15px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 4px 10px rgba(0,0,0,0.03); color: var(--primary-dark); font-weight: bold; font-size: 14px; cursor: pointer; }
-    .logged-out-terms-btn:active { background: #FCF9F2; }
+    .login-disclaimer { font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 25px; line-height: 1.5; padding: 0 5px; margin-bottom: 70px; }
 
     .profile-container { display: none; width: 100%; padding: 0 20px; padding-bottom: 50px; }
     .profile-header-info { display: flex; align-items: center; gap: 15px; margin-bottom: 35px; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.02); }
-    
-    /* UPDATED LOGO PATH FOR PROFILE AVATAR */
-    .avatar { 
-        width: 60px; height: 60px; 
-        background: #FFF9F5 url('logo.jpg') no-repeat center center; 
-        background-size: contain;
-        border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 2px solid var(--accent-light); 
-    }
-    
+    .avatar { width: 60px; height: 60px; background: #FFF9F5 url('logo.jpg') no-repeat center center; background-size: contain; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 2px solid var(--accent-light); }
     .user-details h2 { color: var(--primary-dark); font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
-    .edit-icon { font-size: 16px; cursor: pointer; color: var(--accent-color); transition: transform 0.2s; background: #FFF5F0; padding: 5px; border-radius: 50%; display: flex; }
-    .edit-icon:active { transform: scale(0.8); }
-    .user-details p
-    { color: var(--primary-dark); font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
     .edit-icon { font-size: 16px; cursor: pointer; color: var(--accent-color); transition: transform 0.2s; background: #FFF5F0; padding: 5px; border-radius: 50%; display: flex; }
     .edit-icon:active { transform: scale(0.8); }
     .user-details p { color: var(--text-muted); font-size: 13px; font-weight: bold; margin-top: 4px; }
@@ -160,6 +102,25 @@
     .custom-modal.show { display: flex; opacity: 1; }
     .modal-content { background: white; padding: 30px 20px; border-radius: 25px; text-align: center; width: 80%; max-width: 320px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); transform: translateY(20px) scale(0.95); transition: transform 0.3s ease; }
     .close-modal-btn { background: var(--accent-color); color: white; border: none; padding: 14px 30px; border-radius: 15px; font-size: 15px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
+
+    /* PREMIUM ROSE PINK WELCOME POPUP */
+    .welcome-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(44, 54, 63, 0.85); z-index: 20000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(6px); opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
+    .welcome-overlay.show { opacity: 1; pointer-events: auto; }
+    
+    .welcome-box { background: linear-gradient(145deg, #FFF0F5 0%, #FFE4E1 100%); padding: 40px 25px 35px 25px; border-radius: 35px; text-align: center; width: 88%; max-width: 340px; box-shadow: 0 20px 45px rgba(233, 30, 99, 0.25), inset 0 0 20px rgba(255,255,255,0.9); transform: translateY(40px) scale(0.9); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; border: 3px solid #FFC0CB; }
+    .welcome-overlay.show .welcome-box { transform: translateY(0) scale(1); }
+    
+    .welcome-close { position: absolute; top: 18px; right: 18px; background: rgba(255, 255, 255, 0.8); border: none; width: 34px; height: 34px; border-radius: 50%; font-size: 16px; color: #D81B60; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: 0.2s; }
+    .welcome-close:active { transform: scale(0.85); }
+    
+    .welcome-icon { font-size: 60px; margin-bottom: 12px; animation: float 3s ease-in-out infinite; display: inline-block; filter: drop-shadow(0 8px 12px rgba(233, 30, 99, 0.25)); }
+    @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-12px); } 100% { transform: translateY(0px); } }
+    
+    .welcome-heading { color: #880E4F; font-size: 26px; font-weight: 900; margin-bottom: 12px; font-family: 'Trebuchet MS', sans-serif; letter-spacing: 0.5px; line-height: 1.2; }
+    .welcome-text { color: #AD1457; font-size: 15px; line-height: 1.5; font-weight: bold; margin-bottom: 28px; padding: 0 5px; }
+    
+    .welcome-btn { background: linear-gradient(135deg, #E91E63, #FF4081); color: white; border: none; padding: 16px 30px; border-radius: 22px; font-size: 17px; font-weight: bold; cursor: pointer; box-shadow: 0 10px 25px rgba(233, 30, 99, 0.4); width: 100%; transition: transform 0.2s, box-shadow 0.2s; letter-spacing: 0.5px; }
+    .welcome-btn:active { transform: scale(0.95); box-shadow: 0 5px 15px rgba(233, 30, 99, 0.3); }
 </style>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -168,6 +129,20 @@
 
 </head>
 <body>
+
+<div id="welcomeModal" class="welcome-overlay">
+    <div class="welcome-box">
+        <button class="welcome-close" onclick="closeWelcomeModal()">✖</button>
+        <div class="welcome-icon">💖</div>
+        <h2 class="welcome-heading">Welcome to<br>Dreamy Delight!</h2>
+        <p class="welcome-text">
+            Hello there! 🌸<br><br>
+            Great news! We are finally online. Now you can easily order your favorite delicious food directly from your phone.<br><br>
+            Thank you for your love!
+        </p>
+        <button class="welcome-btn" onclick="window.location.href='menu.html'">Explore Menu ✨</button>
+    </div>
+</div>
 
 <div class="top-alert" id="topAlert">
     <div class="top-alert-msg" id="topAlertMsg">Notification message</div>
@@ -217,9 +192,12 @@
             <div class="input-group">
                 <input type="email" id="emailBox" class="email-input" placeholder="Enter your email (@gmail.com)">
             </div>
-            <div class="input-group">
-                <input type="password" id="passBox" class="email-input" placeholder="Enter password (Min 8 chars)">
+            
+            <div class="input-group" style="position: relative;">
+                <input type="password" id="passBox" class="email-input" placeholder="Enter password (Min 8 chars)" style="padding-right: 40px;">
+                <span id="togglePassword" onclick="togglePasswordVisibility()" style="position: absolute; right: 15px; cursor: pointer; font-size: 18px; color: var(--text-muted); user-select: none;">👁️</span>
             </div>
+            
             <button id="proceedBtn" class="proceed-btn" disabled onclick="handleDatabaseAuth()">Proceed</button>
         </div>
         <p class="login-disclaimer">Note: We currently do not have a password reset feature. If you forget your password, please contact customer care or create a new ID.</p>
@@ -290,6 +268,9 @@ function getSecureCookie(name) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    // SHOW WELCOME POPUP AUTOMATICALLY
+    setTimeout(() => { showWelcomeModal(); }, 600);
+
     updateCartBadge(); 
     
     const savedEmail = localStorage.getItem("loggedInEmail") || getSecureCookie("loggedInEmail");
@@ -331,6 +312,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
     startAutoSlider();
 });
+
+// WELCOME POPUP FUNCTIONS
+function showWelcomeModal() {
+    const modal = document.getElementById("welcomeModal");
+    modal.classList.add("show");
+}
+
+function closeWelcomeModal() {
+    const modal = document.getElementById("welcomeModal");
+    modal.classList.remove("show");
+}
+
+// ✅ PASSWORD TOGGLE FUNCTION ✅
+function togglePasswordVisibility() {
+    const passInput = document.getElementById("passBox");
+    const toggleIcon = document.getElementById("togglePassword");
+    
+    if (passInput.type === "password") {
+        passInput.type = "text";
+        toggleIcon.innerText = "🙈"; // Aankh band emoji jab password dikhe
+    } else {
+        passInput.type = "password";
+        toggleIcon.innerText = "👁️"; // Aankh khuli emoji jab password hide ho
+    }
+}
 
 document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
 
@@ -505,7 +511,10 @@ function updateUIForLoggedInUser(email, name) {
 function updateUIForLoggedOutUser() {
     document.getElementById("loginFormContainer").style.display = "flex";
     document.getElementById("profileContainer").style.display = "none";
-    document.getElementById("emailBox").value = ""; document.getElementById("passBox").value = "";
+    document.getElementById("emailBox").value = ""; 
+    document.getElementById("passBox").value = "";
+    document.getElementById("passBox").type = "password"; // Reset pass box visually
+    document.getElementById("togglePassword").innerText = "👁️";
     validateLogin(); 
 }
 
