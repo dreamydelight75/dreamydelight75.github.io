@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -466,7 +467,7 @@ function renderOrdersFromCache() {
             {
                 orderId: "PD-983415",
                 timestamp: "Today, 08:30 PM",
-                status: "preparing",
+                status: "Confirmed",
                 deliveryCode: "WAITING",
                 paymentMode: "UPI Apps (Google Pay)",
                 billBreakup: { subTotal: 339, tax: 17, delivery: 40, grandTotal: 396 },
@@ -539,8 +540,10 @@ function buildOrdersHTML(ordersArray) {
             badgeClass = "status-cancelled";
         }
 
-        // RENDER RIEALTIME SECURE CODE BOX FOR USER 
+        // RENDER REALTIME SECURE CODE BOX & PREPARATION TIME
         let secureCodeDisplayHtml = "";
+        let prepTimeDisplayHtml = ""; 
+
         if(orderStatus !== 'delivered' && orderStatus !== 'cancelled') {
             const currentDeliveryCode = order.deliveryCode ? order.deliveryCode : "GEN-WAIT";
             secureCodeDisplayHtml = `
@@ -549,6 +552,16 @@ function buildOrdersHTML(ordersArray) {
                     <span class="secure-code-text">${currentDeliveryCode}</span>
                 </div>
             `;
+            
+            // नया कोड: यहाँ से तैयारी का समय (Preparation Time) दिखेगा
+            if(order.preparationTime) {
+                prepTimeDisplayHtml = `
+                    <div style="background: #FFF3E0; border: 1px dashed #FFB74D; border-radius: 10px; padding: 10px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 12px; font-weight: bold; color: #E65100;">⏳ Estimated Time:</span>
+                        <span style="font-size: 15px; font-weight: 900; color: #E65100;">${order.preparationTime} mins</span>
+                    </div>
+                `;
+            }
         }
 
         htmlContent += `
@@ -559,6 +572,7 @@ function buildOrdersHTML(ordersArray) {
                 </div>
                 
                 ${secureCodeDisplayHtml}
+                ${prepTimeDisplayHtml}
                 
                 <div class="order-items-list">
                     ${itemsHtml}
