@@ -53,7 +53,7 @@
 
     /* ADDRESS FORM MODAL */
     .form-modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(44, 54, 63, 0.7); z-index: 1001; backdrop-filter: blur(3px); align-items: flex-end; }
-    .form-modal { background: var(--bg-color); width: 100%; max-height: 90vh; border-radius: 25px 25px 0 0; padding: 25px 20px; overflow-y: auto; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); display: flex; flex-direction: column; }
+    .form-modal { background: var(--bg-color); width: 100%; max-height: 90vh; border-radius: 25px 25px 0 0; padding: 25px 20px 100px 20px; overflow-y: auto; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); display: flex; flex-direction: column; }
     .form-modal.show { transform: translateY(0); }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .modal-header h3 { font-size: 20px; color: var(--primary-dark); font-weight: 900; }
@@ -62,9 +62,22 @@
     .form-section { background: var(--card-bg); padding: 15px; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02); }
     .form-section-title { font-size: 12px; color: var(--text-muted); font-weight: bold; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px; }
     .input-box { width: 100%; padding: 14px; border: 1px solid rgba(0,0,0,0.08); border-radius: 12px; margin-bottom: 12px; font-size: 14px; outline: none; background: #FAFAFA; transition: 0.3s; font-weight: bold; color: var(--primary-dark); appearance: none; -webkit-appearance: none; }
-    select.input-box { background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%232C363F%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 14px top 50%; background-size: 12px auto; }
     .input-box:focus { border-color: var(--accent-color); background-color: white; }
     
+    /* CUSTOM DROPDOWN CSS (ACCORDION STYLE) */
+    .custom-dropdown { width: 100%; margin-bottom: 12px; }
+    .dropdown-selected { width: 100%; padding: 14px; border: 1px solid rgba(0,0,0,0.08); border-radius: 12px; font-size: 14px; background: #FAFAFA url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%232C363F%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E") no-repeat right 14px top 50%; background-size: 12px auto; font-weight: bold; color: var(--primary-dark); cursor: pointer; transition: 0.3s; }
+    .dropdown-selected:active { transform: scale(0.98); }
+    .dropdown-panel { display: none; background: white; border: 1px solid rgba(0,0,0,0.08); border-radius: 12px; margin-top: 5px; max-height: 250px; overflow-y: auto; padding: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+    .dropdown-panel.show { display: block; }
+    .dropdown-search { width: 100%; padding: 12px; border: 1.5px solid var(--accent-light); border-radius: 8px; margin-bottom: 10px; font-size: 14px; outline: none; font-weight: bold; color: var(--primary-dark); }
+    .dropdown-search:focus { border-color: var(--accent-color); }
+    .dropdown-option { padding: 12px 10px; font-size: 14px; color: var(--primary-dark); border-bottom: 1px solid rgba(0,0,0,0.03); cursor: pointer; font-weight: 500; transition: background 0.2s; }
+    .dropdown-option:last-child { border-bottom: none; }
+    .dropdown-option:active { background: #FFF5F0; color: var(--accent-color); font-weight: bold; border-radius: 8px;}
+
+    .info-msg { background: #FFF5F0; border: 1px solid rgba(231, 111, 81, 0.3); padding: 12px; border-radius: 12px; font-size: 13px; color: #E76F51; line-height: 1.5; font-weight: bold; margin-bottom: 15px; }
+
     /* Tag Pills */
     .tag-selector { display: flex; gap: 10px; margin-bottom: 5px; }
     .tag-pill { flex: 1; padding: 10px; text-align: center; border-radius: 12px; border: 1px solid rgba(0,0,0,0.08); color: var(--text-muted); font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.3s; background: white; }
@@ -73,7 +86,7 @@
     .save-address-btn { width: 100%; padding: 16px; background: var(--primary-dark); color: white; font-size: 16px; font-weight: bold; border: none; border-radius: 15px; cursor: pointer; box-shadow: 0 5px 15px rgba(44, 54, 63, 0.3); margin-top: 10px; transition: 0.3s; }
     .save-address-btn:active { transform: scale(0.96); }
 
-    /* FLOATING BOTTOM NAV */
+    /* FLOATING BOTTOM NAV & SIDE MENU ... (Unchanged) */
     .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px 0 15px 0; z-index: 100; box-shadow: 0 -5px 25px rgba(0,0,0,0.06); border-top-left-radius: 25px; border-top-right-radius: 25px; }
     .bottom-nav div { color: var(--text-muted); text-align: center; font-size: 12px; cursor: pointer; font-weight: bold; transition: 0.3s; }
     .icon { font-size: 24px; margin-bottom: 3px; font-style: normal; transition: transform 0.2s; }
@@ -82,10 +95,8 @@
     .active-nav { color: var(--accent-color) !important; }
     .cart-badge { position: absolute; top: -5px; right: -8px; background: var(--accent-color); color: white; font-size: 10px; font-weight: bold; border-radius: 50%; width: 18px; height: 18px; display: none; align-items: center; justify-content: center; border: 2px solid white; box-sizing: content-box; }
 
-    /* SIDE MENU UPDATES */
     .side-menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(44, 54, 63, 0.7); z-index: 998; opacity: 0; pointer-events: none; transition: 0.3s ease-in-out; backdrop-filter: blur(3px); }
     .side-menu-overlay.active { opacity: 1; pointer-events: auto; }
-    
     .side-menu { position: fixed; top: 0; left: -100%; width: 80%; max-width: 320px; height: 100vh; background: var(--bg-color); z-index: 999; transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1); display: flex; flex-direction: column; overflow-y: auto; box-shadow: 5px 0 25px rgba(0,0,0,0.15); }
     .side-menu.active { left: 0; }
     .side-menu-top { display: flex; justify-content: space-between; align-items: center; padding: 25px 20px 10px 20px; }
@@ -97,25 +108,21 @@
     .input-group { display: flex; align-items: center; width: 100%; background: white; padding: 15px 20px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); }
     .email-input { border: none; background: transparent; outline: none; font-size: 15px; color: var(--primary-dark); width: 100%; font-weight: bold; }
     .proceed-btn { width: 100%; background: #d9dada; color: white; font-size: 18px; font-weight: bold; border: none; padding: 16px; border-radius: 15px; cursor: not-allowed; transition: 0.3s ease; margin-top: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-    
     .login-disclaimer { font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 25px; line-height: 1.5; padding: 0 5px; }
 
     .profile-container { display: none; width: 100%; padding: 0 20px; padding-bottom: 50px; }
     .profile-header-info { display: flex; align-items: center; gap: 15px; margin-bottom: 35px; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.02); }
     .avatar { width: 60px; height: 60px; background: #FFF9F5 url('https://cdn-icons-png.flaticon.com/512/3135/3135715.png') no-repeat center center; background-size: contain; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 2px solid var(--accent-light); }
-    
     .user-details h2 { color: var(--primary-dark); font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
     .edit-icon { font-size: 16px; cursor: pointer; color: var(--accent-color); transition: transform 0.2s; background: #FFF5F0; padding: 5px; border-radius: 50%; display: flex; }
     .edit-icon:active { transform: scale(0.8); }
     .user-details p { color: var(--text-muted); font-size: 13px; font-weight: bold; margin-top: 4px; }
-    
     .profile-menu-list { display: flex; flex-direction: column; background: white; border-radius: 20px; padding: 10px 0; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02); }
     .profile-menu-item { display: flex; align-items: center; gap: 15px; padding: 16px 20px; color: var(--primary-dark); font-size: 15px; font-weight: bold; cursor: pointer; border-bottom: 1px solid rgba(0,0,0,0.03); transition: background 0.2s; }
     .profile-menu-item:active { background: #FCF9F2; }
     .profile-menu-item:last-child { border-bottom: none; }
     .menu-icon-img { font-size: 20px; width: 25px; text-align: center; }
 
-    /* ALERTS & MODALS */
     .top-alert { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: #4CAF50; color: white; padding: 15px 20px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.2); display: flex; justify-content: space-between; align-items: center; z-index: 10000; transition: top 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
     .top-alert.show { top: 20px; }
     .top-alert-msg { font-size: 14px; font-weight: bold; flex: 1; text-align: center; }
@@ -168,32 +175,48 @@
         <div class="form-section">
             <div class="form-section-title">Location Details</div>
             
-            <select id="street" class="input-box">
-                <option value="" disabled selected>Select Street / Area</option>
-                <option value="Block Road Baharagora">Block Road Baharagora</option>
-                <option value="Market Road Baharagora">Market Road Baharagora</option>
-                <option value="Charongi Rode">Charongi Rode</option>
-                <option value="NH Rode Baharagora">NH Rode Baharagora</option>
-            </select>
+            <div class="info-msg">
+                ℹ️ <b>Note:</b> We currently do not have a live location feature. It will be added later. For now, please select your nearby area/landmark to place the order. Once the delivery boy reaches nearby, contact them via phone to guide them to your exact location to receive your food.
+            </div>
 
-            <select id="landmark" class="input-box">
-                <option value="" disabled selected>Select Nearby Landmark</option>
-                <option value="Near Baharagora post office">Near Baharagora post office</option>
-                <option value="Near model school Baharagora">Near model school Baharagora</option>
-                <option value="Near Kolkata Sweet">Near Kolkata Sweet</option>
-                <option value="Near Raj Medical">Near Raj Medical</option>
-                <option value="Near Baharagora Overbridge">Near Baharagora Overbridge</option>
-                <option value="Near Baharagora Collage">Near Baharagora Collage</option>
-                <option value="Near Baharagora Park">Near Baharagora Park</option>
-                <option value="Near Baharagora Police station">Near Baharagora Police station</option>
-                <option value="Near Santi Hotel">Near Santi Hotel</option>
-                <option value="Near Bihar Medical">Near Bihar Medical</option>
-                <option value="Near Chorangi chowk">Near Chorangi chowk</option>
-                <option value="Near Baharagora polytechnic College">Near Baharagora polytechnic College</option>
-                <option value="Near Kundu Medical">Near Kundu Medical</option>
-                <option value="Near Baharagora Block">Near Baharagora Block</option>
-                <option value="Near Baharagora +2 School">Near Baharagora +2 School</option>
-            </select>
+            <div class="custom-dropdown">
+                <div class="dropdown-selected" id="streetSelected" onclick="toggleDropdown('streetPanel')">Select Street / Area</div>
+                <div class="dropdown-panel" id="streetPanel">
+                    <input type="text" class="dropdown-search" id="streetSearch" placeholder="🔍 Search Street / Area..." oninput="filterOptions('streetSearch', 'streetOptions')">
+                    <div id="streetOptions">
+                        <div class="dropdown-option" onclick="selectOption('Block Road Baharagora', 'streetSelected', 'street', 'streetPanel')">Block Road Baharagora</div>
+                        <div class="dropdown-option" onclick="selectOption('Market Road Baharagora', 'streetSelected', 'street', 'streetPanel')">Market Road Baharagora</div>
+                        <div class="dropdown-option" onclick="selectOption('Charongi Rode', 'streetSelected', 'street', 'streetPanel')">Charongi Rode</div>
+                        <div class="dropdown-option" onclick="selectOption('NH Rode Baharagora', 'streetSelected', 'street', 'streetPanel')">NH Rode Baharagora</div>
+                    </div>
+                </div>
+                <input type="hidden" id="street" value="">
+            </div>
+
+            <div class="custom-dropdown">
+                <div class="dropdown-selected" id="landmarkSelected" onclick="toggleDropdown('landmarkPanel')">Select Nearby Landmark</div>
+                <div class="dropdown-panel" id="landmarkPanel">
+                    <input type="text" class="dropdown-search" id="landmarkSearch" placeholder="🔍 Search Landmark..." oninput="filterOptions('landmarkSearch', 'landmarkOptions')">
+                    <div id="landmarkOptions">
+                        <div class="dropdown-option" onclick="selectOption('Near Baharagora post office', 'landmarkSelected', 'landmark', 'landmarkPanel')">Near Baharagora post office</div>
+                        <div class="dropdown-option" onclick="selectOption('Near model school Baharagora', 'landmarkSelected', 'landmark', 'landmarkPanel')">Near model school Baharagora</div>
+                        <div class="dropdown-option" onclick="selectOption('Near Kolkata Sweet', 'landmarkSelected', 'landmark', 'landmarkPanel')">Near Kolkata Sweet</div>
+                        <div class="dropdown-option" onclick="selectOption('Near Raj Medical', 'landmarkSelected', 'landmark', 'landmarkPanel')">Near Raj Medical</div>
+                        <div class="dropdown-option" onclick="selectOption('Near Baharagora Overbridge', 'landmarkSelected', 'landmark', 'landmarkPanel')">Near Baharagora Overbridge</div>
+                        <div class="dropdown-option" onclick="selectOption('Near Baharagora Collage', 'landmarkSelected', 'landmark', 'landmarkPanel')">Near Baharagora Collage</div>
+                        <div class="dropdown-option" onclick="selectOption('Near Baharagora Park', 'landmarkSelected', 'landmark', 'landmarkPanel')">Near Baharagora Park</div>
+                        <div class="dropdown-option" onclick="selectOption('Near Baharagora Police station', 'landmarkSelected', 'landmark', 'landmarkPanel')">Near Baharagora Police station</div>
+                        <div class="dropdown-option" onclick="selectOption('Near Santi Hotel', 'landmarkSelected', 'landmark', 'landmarkPanel')">Near Santi Hotel</div>
+                        <div class="dropdown-option" onclick="selectOption('Near Bihar Medical', 'landmarkSelected', 'landmark', 'landmarkPanel')">Near Bihar Medical</div>
+                        <div class="dropdown-option" onclick="selectOption('Near Chorangi chowk', 'landmarkSelected', 'landmark', 'landmarkPanel')">Near Chorangi chowk</div>
+                        <div class="dropdown-option" onclick="selectOption('Near Baharagora polytechnic College', 'landmarkSelected', 'landmark', 'landmarkPanel')">Near Baharagora polytechnic College</div>
+                        <div class="dropdown-option" onclick="selectOption('Near Kundu Medical', 'landmarkSelected', 'landmark', 'landmarkPanel')">Near Kundu Medical</div>
+                        <div class="dropdown-option" onclick="selectOption('Near Baharagora Block', 'landmarkSelected', 'landmark', 'landmarkPanel')">Near Baharagora Block</div>
+                        <div class="dropdown-option" onclick="selectOption('Near Baharagora +2 School', 'landmarkSelected', 'landmark', 'landmarkPanel')">Near Baharagora +2 School</div>
+                    </div>
+                </div>
+                <input type="hidden" id="landmark" value="">
+            </div>
 
             <input type="text" id="cityPin" class="input-box" value="832101" readonly style="background: #e9ecef; cursor: not-allowed; color: #888; border-color: transparent;">
         </div>
@@ -261,7 +284,6 @@
 const db = firebase.database();
 let userDbKey = "";
 let currentAddresses = {};
-
 let fetchedProfileName = "";
 let fetchedProfileMobile = "";
 
@@ -272,9 +294,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
 
-/* ==========================================
-   🚀 BULLETPROOF HISTORY LOGIC 🚀
-   ========================================== */
 history.replaceState({ page: 'address_base' }, null, location.href);
 history.pushState({ page: 'address_trap' }, null, location.href);
 
@@ -282,18 +301,15 @@ window.addEventListener('popstate', function(event) {
     const sideMenu = document.getElementById("sideMenu");
     const formOverlay = document.getElementById("formModalOverlay");
     
-    // Prioritize closing form modal if open
     if (formOverlay.style.display === "flex") {
         closeAddressForm(null, true);
         history.pushState({ page: 'address_trap' }, null, location.href);
     } 
-    // Otherwise close side menu if open
     else if (sideMenu.classList.contains("active")) {
         sideMenu.classList.remove("active");
         document.getElementById("sideMenuOverlay").classList.remove("active");
         history.pushState({ page: 'address_trap' }, null, location.href);
     } 
-    // Go back to Menu if nothing is open
     else {
         window.location.replace('index.html');
     }
@@ -324,7 +340,6 @@ function checkAppLoginState() {
         logoutNotice.style.display = "none";
         addressSection.style.display = "block";
         
-        // 🚀 NEW: Load instantly from local storage for faster UI
         const cachedAddresses = localStorage.getItem("cached_addresses_" + userDbKey);
         if(cachedAddresses) {
             try {
@@ -333,7 +348,6 @@ function checkAppLoginState() {
             } catch (e) { console.error("Cache read error", e); }
         }
 
-        // Fetch fresh data from Firebase in background
         fetchAddressesFromFirebase();
         fetchUserProfileData();
     } else {
@@ -356,10 +370,7 @@ function fetchUserProfileData() {
 function fetchAddressesFromFirebase() {
     db.ref('users/' + userDbKey + '/addresses').on('value', (snapshot) => {
         currentAddresses = snapshot.exists() ? snapshot.val() : {};
-        
-        // 🚀 NEW: Save fresh addresses to local storage for the next visit
         localStorage.setItem("cached_addresses_" + userDbKey, JSON.stringify(currentAddresses));
-        
         renderAddressCards();
     });
 }
@@ -376,8 +387,6 @@ function renderAddressCards() {
 
     addressKeys.forEach((key) => {
         const addr = currentAddresses[key];
-        
-        // Updated to remove the house number from the displayed string
         const fullAddrStr = `${addr.street}${addr.landmark ? ', ' + addr.landmark : ''}, ${addr.cityPin}`;
         
         container.innerHTML += `
@@ -406,18 +415,29 @@ function openAddressForm(editKey = null) {
         const data = currentAddresses[editKey];
         document.getElementById("contactName").value = data.name;
         document.getElementById("contactPhone").value = data.phone;
+        
+        // Update Custom Dropdowns for Edit
         document.getElementById("street").value = data.street || "";
+        document.getElementById("streetSelected").innerText = data.street || "Select Street / Area";
+        
         document.getElementById("landmark").value = data.landmark || "";
+        document.getElementById("landmarkSelected").innerText = data.landmark || "Select Nearby Landmark";
+        
         setTagActive(data.tag);
     } else {
         document.getElementById("contactName").value = fetchedProfileName;
         document.getElementById("contactPhone").value = fetchedProfileMobile;
+        
+        // Reset Custom Dropdowns
         document.getElementById("street").value = "";
+        document.getElementById("streetSelected").innerText = "Select Street / Area";
+        
         document.getElementById("landmark").value = "";
+        document.getElementById("landmarkSelected").innerText = "Select Nearby Landmark";
+        
         setTagActive("Home");
     }
 
-    // Pincode is always strictly 832101
     document.getElementById("cityPin").value = "832101";
 
     overlay.style.display = "flex";
@@ -428,6 +448,9 @@ function openAddressForm(editKey = null) {
 function closeAddressForm(e = null, fromPopState = false) {
     if (e && e.target !== document.getElementById("formModalOverlay")) return;
     
+    // Close dropdowns if form is closing
+    document.querySelectorAll('.dropdown-panel').forEach(p => p.classList.remove('show'));
+
     const overlay = document.getElementById("formModalOverlay");
     if (overlay.style.display === "flex" && !fromPopState) {
         history.back(); 
@@ -461,7 +484,7 @@ function saveAddressToFirebase() {
         phone: document.getElementById("contactPhone").value.trim(),
         street: document.getElementById("street").value,
         landmark: document.getElementById("landmark").value,
-        cityPin: "832101", // Fixed PIN
+        cityPin: "832101", 
         tag: document.getElementById("addressTag").value
     };
 
@@ -536,11 +559,9 @@ function resetBtnState() {
 }
 
 function logoutUser() {
-    // 🚀 NEW: Clear local cached data for privacy when logging out
     if(userDbKey) {
         localStorage.removeItem("cached_addresses_" + userDbKey);
     }
-    
     localStorage.removeItem("loggedInEmail"); 
     localStorage.removeItem("loggedInName");
     closeSideMenu(); 
@@ -578,6 +599,41 @@ function showTopAlert(msg, type) {
     alertBox.style.background = type === 'error' ? "#e53300" : "#4CAF50"; alertBox.classList.add("show");
     setTimeout(() => { alertBox.classList.remove("show"); }, 3000);
 }
+
+/* ==========================================
+   🚀 CUSTOM DROPDOWN LOGIC 🚀
+   ========================================== */
+function toggleDropdown(panelId) {
+    const panel = document.getElementById(panelId);
+    const isShowing = panel.classList.contains('show');
+    
+    // Close other dropdowns
+    document.querySelectorAll('.dropdown-panel').forEach(p => p.classList.remove('show'));
+    
+    if(!isShowing) {
+        panel.classList.add('show');
+    }
+}
+
+function selectOption(value, textId, hiddenId, panelId) {
+    document.getElementById(textId).innerText = value;
+    document.getElementById(hiddenId).value = value;
+    document.getElementById(panelId).classList.remove('show');
+}
+
+function filterOptions(inputId, listId) {
+    const filter = document.getElementById(inputId).value.toLowerCase();
+    const options = document.getElementById(listId).getElementsByClassName('dropdown-option');
+    for (let i = 0; i < options.length; i++) {
+        const txtValue = options[i].textContent || options[i].innerText;
+        if (txtValue.toLowerCase().indexOf(filter) > -1) {
+            options[i].style.display = "";
+        } else {
+            options[i].style.display = "none";
+        }
+    }
+}
 </script>
 </body>
 </html>
+
